@@ -1,0 +1,40 @@
+{
+  "name": "scrapper",
+  "version": "1.0.0",
+  "description": "Scrapper jinni data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "aws-cdk": "2.47.0",
+    "eslint": "^8.44.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.47.0",
+    "aws-sdk": "^2.1237.0",
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.3",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "puppeteer": "^20.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/21Michael/Scrapper.git"
+  },
+  "keywords": [
+    "puppeteer",
+    "node.js"
+  ],
+  "author": "Mikhail Rudiev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/21Michael/Scrapper/issues"
+  },
+  "homepage": "https://github.com/21Michael/Scrapper#readme"
+}
