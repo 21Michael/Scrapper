@@ -16,7 +16,7 @@ export const scrapPagination = async ({
     const paginationPages = await page.evaluate(() => {
         const paginationPages = [];
 
-        const paginationElement = document.querySelector('.pagination');
+        const paginationElement = document.querySelector('.pagination') as Element;
         const pageElements = Array.from(paginationElement.querySelectorAll('.page-item > a'));
         const lastPageElement = pageElements[pageElements.length - 2];
 
@@ -56,10 +56,10 @@ export const scrapCandidates = async ({
         const dateRegExp = new RegExp(`(сьогодні)|(вчора)|(${MONTH_UKR_ARRAY.join('|')}+)`, 'g');
         const cityRegExp = new RegExp(`${CITY_UKR_ARRAY.join('|')}+`, 'g');
 
-        const candidatesElement = document.querySelector('.searchresults');
+        const candidatesElement = document.querySelector('.searchresults') as Element;
         const candidatesElements = Array.from(candidatesElement.querySelectorAll('.card'));
 
-        return candidatesElements.map(candidate => {
+        return candidatesElements.map((candidate: any) => {
             const developerDetailsElement = candidate.querySelector('.order-1').lastElementChild;
             const developerDetailsElementText = developerDetailsElement?.textContent;
             const nameText = candidate.querySelector('.profile').textContent;
@@ -113,10 +113,10 @@ export const scrapVacancies = async ({
         const companyTypeRegExp = new RegExp(`${COMPANY_TYPE_ARRAY.join('|')}+`, 'g');
         const expLVLRegExp = new RegExp(`${EXP_LVL_ARRAY.join('|')}+`, 'g');
 
-        const vacancyElement = document.querySelector('.list-jobs');
+        const vacancyElement = document.querySelector('.list-jobs') as Element;
         const vacancyElements = Array.from(vacancyElement.querySelectorAll('li'));
 
-        return vacancyElements.map(vacancy => {
+        return vacancyElements.map((vacancy: any) => {
             const dateText = vacancy.querySelector('.text-date').firstChild.textContent;
             const viewsText = vacancy.querySelectorAll('.text-date > span')[0].textContent;
             const responsesText = vacancy.querySelectorAll('.text-date > span')[1].textContent;

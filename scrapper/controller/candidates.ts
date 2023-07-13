@@ -17,7 +17,7 @@ export const getCandidates = async ({
     url: string;
     section: TYPE_SECTIONS;
 }) => {
-    let candidates = [];
+    let candidates: ICandidate[] = [];
 
     if(fromCache) {
         const candidatesFile = await fs.readFileSync('./JSON/candidates.json');
@@ -33,7 +33,7 @@ export const getCandidates = async ({
 
         console.log('paginationPages:', paginationCandidatesPages.length);
 
-        const candidatesScrapped: ICandidate[] = await syncChunkScrapping({
+        const candidatesScrapped = await syncChunkScrapping({
             paginationPages: paginationCandidatesPages,
             url: urlCandidates,
             browser,

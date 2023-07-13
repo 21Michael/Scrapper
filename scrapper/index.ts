@@ -1,10 +1,16 @@
 import puppeteer from 'puppeteer';
 import { URL, SECTIONS, PROGRAMMING_LANGUAGE, REGION } from './constants';
 import { getVacancies, getCandidates } from './controller';
+const mongoose = require('mongoose');
 
 (async () => {
     try {
-        const browser = await puppeteer.launch();
+        await mongoose.connect('mongodb://scrapper-db:27017/scrapper');
+
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox']
+        });
 
         // Scrap Vacancies Data
         const vacancies = await getVacancies({

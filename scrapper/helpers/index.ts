@@ -84,7 +84,7 @@ export const syncChunkScrapping = async ({
     scrapper: any;
     chunkSize: number;
 }) => {
-    const chunks = chunk(paginationPages, chunkSize);
+    const chunks: any[] = chunk(paginationPages, chunkSize);
 
     const dataResponse = [];
     let chunkResponse = [];
@@ -92,7 +92,7 @@ export const syncChunkScrapping = async ({
     for(let i = 0; i < chunks.length;) {
         console.log(i);
 
-        chunkResponse = await Promise.all(chunks[i].map(async ({ href }) => {
+        chunkResponse = await Promise.all(chunks[i].map(async ({ href }: { href: string; }) => {
             return scrapper({ url: url + href, browser });
         }));
 
