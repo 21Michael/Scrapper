@@ -1,6 +1,7 @@
 FROM mongo:latest
 
-ENV SERVER_DIR "$/app/db"
+VOLUME /data/db /data/configdb
 
+CMD ["mongod"]
 EXPOSE 27017
 
