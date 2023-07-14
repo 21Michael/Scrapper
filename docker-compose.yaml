@@ -1,0 +1,61 @@
+version: "2.6"
+
+services:
+  scrapper-db:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data:/data/db
+    container_name: scrapper-db
+    command: mongod
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    restart: always
+    networks:
+      - scrapper-network
+
+  scrapper-service:
+    image: ubuntu
+    build: ./scrapper
+    volumes:
+      - ./scrapper:/usr/project/scrapper
+    ports:
+      - 4000:4000
+    container_name: scrapper-service
+    healthcheck:
+      test: curl -f localhost:4000/healthy
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - scrapper-db
+    networks:
+      - scrapper-network
+
+  scrapper-api:
+    image: node:latest
+    build: ./api
+    volumes:
+      - ./api:/usr/project/api
+    ports:
+      - 4001:4001
+    container_name: scrapper-api
+    healthcheck:
+      test: curl -f localhost:4001/healthy
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - scrapper-db
+      - scrapper-service
+    networks:
+      - scrapper-network
+
+networks:
+  scrapper-network:
+    driver: bridge
