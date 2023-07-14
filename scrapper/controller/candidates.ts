@@ -1,8 +1,9 @@
 import { Browser } from 'puppeteer';
 import { IFilterParams, syncChunkScrapping, urlGenerator } from '../helpers';
 import { scrapCandidates, scrapPagination } from '../services/scrapper';
-import { ICandidate, TYPE_SECTIONS } from '../types';
-const fs = require('fs');
+import { ICandidate, TYPE_SECTIONS } from '../shared/types';
+import { DB } from '../shared/services/db';
+import { candidateModel } from '../shared/models';
 
 export const getCandidates = async ({
     fromCache,
@@ -17,13 +18,11 @@ export const getCandidates = async ({
     url: string;
     section: TYPE_SECTIONS;
 }) => {
+    const CandidateDB = new DB<ICandidate>({ model: candidateModel });
     let candidates: ICandidate[] = [];
 
     if(fromCache) {
-        const candidatesFile = await fs.readFileSync('./JSON/candidates.json');
-        const candidatesFromFile = candidatesFile?.length ? JSON.parse(candidatesFile) : null;
-
-        candidates = candidatesFromFile || [];
+        candidates = await CandidateDB.getAll();
     }
 
     if(!fromCache || !candidates.length) {
@@ -41,11 +40,19 @@ export const getCandidates = async ({
             scrapper: scrapCandidates
         });
 
-        if(candidatesScrapped.length) {
-            await fs.writeFileSync('./JSON/candidates.json', JSON.stringify(candidatesScrapped));
+        if(!candidatesScrapped.length) {
+            return Error('Scrapping error');
         }
 
-        candidates = candidatesScrapped;
+        await CandidateDB.deleteAll();
+
+        candidates = candidatesScrapped.flat(1);
+
+        await Promise.all(
+            candidates.map(async candidate => {
+                await CandidateDB.create(candidate);
+            })
+        );
     }
 
     return candidates;

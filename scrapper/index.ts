@@ -1,11 +1,11 @@
 import puppeteer from 'puppeteer';
-import { URL, SECTIONS, PROGRAMMING_LANGUAGE, REGION } from './constants';
+import { URL, SECTIONS, PROGRAMMING_LANGUAGE, REGION } from './shared/constants';
 import { getVacancies, getCandidates } from './controller';
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 (async () => {
     try {
-        await mongoose.connect('mongodb://scrapper-db:27017/scrapper');
+        await mongoose.connect('mongodb://172.18.0.2:27017');
 
         const browser = await puppeteer.launch({
             headless: true,
@@ -13,7 +13,7 @@ const mongoose = require('mongoose');
         });
 
         // Scrap Vacancies Data
-        const vacancies = await getVacancies({
+        await getVacancies({
             url: URL,
             fromCache: true,
             section: SECTIONS.jobs,
@@ -24,12 +24,10 @@ const mongoose = require('mongoose');
             }
         });
 
-        vacancies.forEach(vacancy => {
-            console.log(vacancy);
-        });
+        // console.log(vacancies);
 
         // Scrap Candidates Data
-        const candidates = await getCandidates({
+        await getCandidates({
             url: URL,
             fromCache: true,
             section: SECTIONS.developers,
@@ -40,10 +38,8 @@ const mongoose = require('mongoose');
             }
         });
 
-        candidates.forEach(candidate => {
-            console.log(candidate);
-        });
-
+        // console.log(candidates);
+        console.log('Scrapping Finished');
         await browser.close();
     } catch (e) {
         console.log('Error:', e);

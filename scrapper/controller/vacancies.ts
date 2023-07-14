@@ -1,8 +1,9 @@
 import { IFilterParams, syncChunkScrapping, urlGenerator } from '../helpers';
 import { scrapPagination, scrapVacancies } from '../services/scrapper';
 import { Browser } from 'puppeteer';
-import { IVacancy, TYPE_SECTIONS } from '../types';
-const fs = require('fs');
+import { IVacancy, TYPE_SECTIONS } from '../shared/types';
+import { DB } from '../shared/services/db';
+import { vacancyModel } from '../shared/models';
 
 export const getVacancies = async ({
     fromCache,
@@ -17,13 +18,11 @@ export const getVacancies = async ({
     url: string;
     section: TYPE_SECTIONS;
 }) => {
+    const VacancyDB = new DB<IVacancy>({ model: vacancyModel });
     let vacancies: IVacancy[] = [];
 
     if(fromCache) {
-        const vacanciesFile = await fs.readFileSync('./JSON/vacancies.json');
-        const vacanciesFromFile = vacanciesFile?.length ? JSON.parse(vacanciesFile) : null;
-
-        vacancies = vacanciesFromFile || [];
+        vacancies = await VacancyDB.getAll();
     }
 
     if(!fromCache || !vacancies.length) {
@@ -33,21 +32,27 @@ export const getVacancies = async ({
 
         console.log('paginationPages:', paginationVacanciesPages.length);
 
-        if(!vacancies.length) {
-            const vacanciesScrapped = await syncChunkScrapping({
-                paginationPages: paginationVacanciesPages,
-                url: urlVacancies,
-                browser,
-                chunkSize: 50,
-                scrapper: scrapVacancies
-            });
+        const vacanciesScrapped = await syncChunkScrapping({
+            paginationPages: paginationVacanciesPages,
+            url: urlVacancies,
+            browser,
+            chunkSize: 50,
+            scrapper: scrapVacancies
+        });
 
-            if(vacanciesScrapped.length) {
-                await fs.writeFileSync('./JSON/vacancies.json', JSON.stringify(vacanciesScrapped));
-            }
-
-            vacancies = vacanciesScrapped;
+        if(!vacanciesScrapped.length) {
+            return Error('Scrapping error');
         }
+
+        await VacancyDB.deleteAll();
+
+        vacancies = vacanciesScrapped.flat(1);
+
+        await Promise.all(
+            vacancies.map(async vacancy => {
+                await VacancyDB.create(vacancy);
+            })
+        );
     }
 
     return vacancies;
