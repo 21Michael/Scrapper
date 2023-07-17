@@ -11,7 +11,6 @@ export class DB<T> {
         await this.model.deleteMany();
     }
 
-
     async getAll() {
         const data = await this.model.find();
 
