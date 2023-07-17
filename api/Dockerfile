@@ -7,15 +7,11 @@ RUN apt-get update \
     && curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash - \
     && sudo apt install nodejs -y
 
-ENV SERVER_DIR "$/api"
-
-WORKDIR ${SERVER_DIR}
-
-COPY package.json ./
-
-RUN npm i
+WORKDIR /usr/api
 
 COPY . .
+
+RUN npm i
 
 EXPOSE 4001
 

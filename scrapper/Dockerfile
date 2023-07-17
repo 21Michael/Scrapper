@@ -9,15 +9,11 @@ RUN apt-get update \
     && apt-get install -y ./google-chrome-stable_current_amd64.deb \
     && rm -rf ./google-chrome-stable_current_amd64.deb
 
-ENV SERVER_DIR "$/scrapper"
-
-WORKDIR ${SERVER_DIR}
-
-COPY package.json ./
-
-RUN npm i
+WORKDIR /usr/scrapper
 
 COPY . .
+
+RUN npm i
 
 EXPOSE 4000
 
