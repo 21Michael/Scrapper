@@ -1,10 +1,12 @@
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
 export class DB<T> {
     private model: Model<T>;
 
     constructor({ model }: { model: Model<T>; }) {
         this.model = model;
+
+         mongoose.connect('mongodb://scrapper-db:27017');
     }
 
     async deleteAll() {

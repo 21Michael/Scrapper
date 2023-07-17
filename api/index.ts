@@ -22,8 +22,6 @@ app.use(cookieSession(cookieOptions));
 
 (async () => {
   try {
-    await mongoose.connect(`mongodb://${process.env.SCRAPPER_DB_IP}:${process.env.SCRAPPER_DB_PORT}`);
-
     app.use('/', routes);
 
     app.listen(port, () => {
