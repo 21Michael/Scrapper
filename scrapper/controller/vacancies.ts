@@ -1,9 +1,9 @@
 import { IFilterParams, syncChunkScrapping, urlGenerator } from '../helpers';
 import { scrapPagination, scrapVacancies } from '../services/scrapper';
 import { Browser } from 'puppeteer';
-import { IVacancy, TYPE_SECTIONS } from '../shared/types';
-import { DB } from '../shared/services/db';
-import { vacancyModel } from '../shared/models';
+import { IVacancy, TYPE_SECTIONS } from '../../shared/types';
+import { DB } from '../../shared/services/db';
+import { vacancyModel } from '../../shared/models';
 
 export const getVacancies = async ({
     fromCache,

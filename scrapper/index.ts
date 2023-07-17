@@ -1,11 +1,11 @@
 import puppeteer from 'puppeteer';
-import { URL, SECTIONS, PROGRAMMING_LANGUAGE, REGION } from './shared/constants';
+import { URL, SECTIONS, PROGRAMMING_LANGUAGE, REGION } from '../shared/constants';
 import { getVacancies, getCandidates } from './controller';
 import mongoose from 'mongoose';
 
 (async () => {
     try {
-        await mongoose.connect('mongodb://172.18.0.2:27017');
+        await mongoose.connect('mongodb://scrapper-db:27017');
 
         const browser = await puppeteer.launch({
             headless: true,

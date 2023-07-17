@@ -1,9 +1,9 @@
 import { Browser } from 'puppeteer';
 import { IFilterParams, syncChunkScrapping, urlGenerator } from '../helpers';
 import { scrapCandidates, scrapPagination } from '../services/scrapper';
-import { ICandidate, TYPE_SECTIONS } from '../shared/types';
-import { DB } from '../shared/services/db';
-import { candidateModel } from '../shared/models';
+import { ICandidate, TYPE_SECTIONS } from '../../shared/types';
+import { DB } from '../../shared/services/db';
+import { candidateModel } from '../../shared/models';
 
 export const getCandidates = async ({
     fromCache,

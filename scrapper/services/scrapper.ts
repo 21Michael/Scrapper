@@ -1,6 +1,6 @@
 import { Browser } from 'puppeteer';
-import { EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY, MONTH_UKR_ARRAY, CITY_UKR_ARRAY } from '../shared/constants';
-import { ICandidate, IVacancy } from '../shared/types';
+import { EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY, MONTH_UKR_ARRAY, CITY_UKR_ARRAY } from '../../shared/constants';
+import { ICandidate, IVacancy } from '../../shared/types';
 
 export const scrapPagination = async ({
     url,

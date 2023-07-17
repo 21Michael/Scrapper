@@ -1,6 +1,6 @@
 import { CandidateController } from "../controller";
 import createRouter from "express";
-import { ICandidate } from "../shared/types";
+import { ICandidate } from "../../shared/types";
 
 const router = createRouter.Router();
 

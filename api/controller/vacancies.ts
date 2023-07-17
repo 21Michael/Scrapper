@@ -1,5 +1,5 @@
-import { IVacancy } from "../shared/types";
-import { DB } from '../shared/services/db';
+import { IVacancy } from "../../shared/types";
+import { DB } from '../../shared/services/db';
 
 export default class Vacancy {
   private DB: DB<IVacancy>;

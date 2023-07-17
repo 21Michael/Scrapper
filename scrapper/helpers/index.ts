@@ -7,10 +7,10 @@ import {
     TYPE_PROGRAMMING_LANGUAGE,
     TYPE_REGION,
     TYPE_SECTIONS
-} from '../shared/types';
+} from '../../shared/types';
 import { chunk } from 'lodash';
 import { Browser } from 'puppeteer';
-import { SECTIONS } from '../shared/constants';
+import { SECTIONS } from '../../shared/constants';
 
 export interface IFilterParams {
     region?: TYPE_REGION[];

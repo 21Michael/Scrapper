@@ -1,6 +1,6 @@
 import { VacancyController } from "../controller";
 import createRouter from "express";
-import { IVacancy } from "../shared/types";
+import { IVacancy } from "../../shared/types";
 
 const router = createRouter.Router();
 

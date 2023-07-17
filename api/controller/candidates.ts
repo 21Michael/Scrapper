@@ -1,5 +1,5 @@
-import { DB } from '../shared/services/db';
-import { ICandidate } from '../shared/types';
+import { DB } from '../../shared/services/db';
+import { ICandidate } from '../../shared/types';
 
 export default class Candidate {
   private DB: DB<ICandidate>;
