@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieSession from "cookie-session";
 import 'dotenv/config';
 import routes from './route';
+import { connectToDB } from '../shared/services/db';
 
 const app = express();
 const port: string | number = process.env.PORT || 4001;
@@ -21,6 +22,8 @@ app.use(cookieSession(cookieOptions));
 
 (async () => {
   try {
+    await connectToDB();
+
     app.use('/', routes);
 
     app.listen(port, () => {

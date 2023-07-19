@@ -21,7 +21,10 @@ services:
 
   scrapper-service:
     build: ./scrapper
+    environment:
+      - STAGE=prod # dev
     volumes:
+      - ./scrapper:/usr/scrapper
       - ./shared:/usr/shared
     ports:
       - 4000:4000
@@ -37,10 +40,12 @@ services:
       - scrapper-network
 
   scrapper-api:
-    image: node:latest
     build: ./api
+    environment:
+      - STAGE=prod # dev
     volumes:
       - ./shared:/usr/shared
+      - ./api:/usr/api
     ports:
       - 4001:4001
     container_name: scrapper-api
@@ -52,6 +57,21 @@ services:
     depends_on:
       - scrapper-db
       - scrapper-service
+    networks:
+      - scrapper-network
+
+  scrapper-client:
+    build: ./client
+    ports:
+      - 3000:3000
+    container_name: scrapper-client
+    healthcheck:
+      test: curl -f localhost:3000/healthy
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - scrapper-api
     networks:
       - scrapper-network
 

@@ -20,7 +20,7 @@ const routes = {
             });
 
             if (vacancies) {
-                res.json(vacancies);
+                res.json('');
             }
         } catch (err: any) {
             res.status(404).send(err.message);

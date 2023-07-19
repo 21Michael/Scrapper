@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx ts-node index.ts",
-    "build": "tsc"
+    "dev": "nodemon - exec ts-node index.ts",
+    "prod": "tsc && node ./dist/api/index.js",
+    "start": "npm run $STAGE"
   },
   "devDependencies": {
     "@types/cookie-session": "^2.0.44",
@@ -20,6 +21,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "nodemon": "^3.0.1",
     "axios": "^0.27.2",
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",

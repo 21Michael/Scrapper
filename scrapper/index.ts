@@ -3,6 +3,7 @@ import express from 'express';
 import 'dotenv/config';
 import routes from './route';
 import { URL } from '../shared/constants';
+import { connectToDB } from '../shared/services/db';
 
 const app = express();
 const port: string | number = process.env.PORT || 4000;
@@ -15,6 +16,8 @@ app.use(express.json());
             headless: true,
             args: ['--no-sandbox']
         });
+
+        await connectToDB();
 
         app.use('/', function (req: any, res: any, next) {
             req.scrapp_config = {

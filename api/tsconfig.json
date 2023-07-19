@@ -6,8 +6,6 @@
       "es2018",
       "dom"
     ],
-    "esModuleInterop": true,
-    "noEmit": true,
     "declaration": true,
     "allowJs": true,
     "strict": true,
@@ -24,9 +22,14 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "typeRoots": ["./node_modules/@types"],
-    "skipLibCheck": true
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "outDir": "dist"
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "node_modules/*",
+    "dist"
   ]
 }

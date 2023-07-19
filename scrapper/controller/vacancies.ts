@@ -22,8 +22,6 @@ export const getVacancies = async ({
 
     const VacancyDB = new DB<IVacancy>({ model: vacancyModel });
 
-    await VacancyDB.connect();
-
     let vacancies: IVacancy[] = [];
 
     if(fromCache) {

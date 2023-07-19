@@ -22,8 +22,6 @@ export const getCandidates = async ({
 
     const CandidateDB = new DB<ICandidate>({ model: candidateModel });
 
-    await CandidateDB.connect();
-
     let candidates: ICandidate[] = [];
 
     if(fromCache) {

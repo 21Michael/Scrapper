@@ -7,12 +7,6 @@ export class DB<T> {
         this.model = model;
     }
 
-    async connect() {
-        console.log('Connecting to DB')
-        await mongoose.connect('mongodb://scrapper-db:27017');
-        console.log('Connected to DB successfully')
-    }
-
     async deleteAll() {
         await this.model.deleteMany();
     }
@@ -30,4 +24,10 @@ export class DB<T> {
 
         return newData;
     }
+}
+
+export const connectToDB = async () => {
+    console.log('Connecting to DB')
+    await mongoose.connect('mongodb://scrapper-db:27017');
+    console.log('Connected to DB successfully')
 }
