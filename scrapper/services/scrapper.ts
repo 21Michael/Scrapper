@@ -53,13 +53,13 @@ export const scrapCandidates = async ({
     const candidatesPages: ICandidate[] = await page.evaluate((EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY, MONTH_UKR_ARRAY, CITY_UKR_ARRAY) => {
         const englishLevelRegExp = new RegExp(`${ENGlISH_LVL_ARRAY.join('|')}+`, 'g');
         const expLVLRegExp = new RegExp(`${EXP_LVL_ARRAY.join('|')}+`, 'g');
-        const dateRegExp = new RegExp(`(сьогодні)|(вчора)|(${MONTH_UKR_ARRAY.join('|')}+)`, 'g');
+        const dateRegExp = new RegExp(`(сьогодні)|(вчора)|(\d.*${MONTH_UKR_ARRAY.join('|')}+)`, 'g');
         const cityRegExp = new RegExp(`${CITY_UKR_ARRAY.join('|')}+`, 'g');
 
         const candidatesElement = document.querySelector('.searchresults') as Element;
         const candidatesElements = Array.from(candidatesElement.querySelectorAll('.card'));
 
-        return candidatesElements.map((candidate: any) => {
+        return candidatesElements.map(( candidate: any) => {
             const developerDetailsElement = candidate.querySelector('.order-1').lastElementChild;
             const developerDetailsElementText = developerDetailsElement?.textContent;
             const nameText = candidate.querySelector('.profile').textContent;
@@ -108,7 +108,7 @@ export const scrapVacancies = async ({
 
     await page.goto(url);
 
-    const vacanciesPages: IVacancy[] = await page.evaluate((EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY) => {
+    const vacanciesPages: IVacancy[] = await page.evaluate( (EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY) => {
         const englishLevelRegExp = new RegExp(`${ENGlISH_LVL_ARRAY.join('|')}+`, 'g');
         const companyTypeRegExp = new RegExp(`${COMPANY_TYPE_ARRAY.join('|')}+`, 'g');
         const expLVLRegExp = new RegExp(`${EXP_LVL_ARRAY.join('|')}+`, 'g');

@@ -5,8 +5,12 @@ export class DB<T> {
 
     constructor({ model }: { model: Model<T>; }) {
         this.model = model;
+    }
 
-         mongoose.connect('mongodb://scrapper-db:27017');
+    async connect() {
+        console.log('Connecting to DB')
+        await mongoose.connect('mongodb://scrapper-db:27017');
+        console.log('Connected to DB successfully')
     }
 
     async deleteAll() {

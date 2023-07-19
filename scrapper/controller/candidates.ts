@@ -1,5 +1,5 @@
 import { Browser } from 'puppeteer';
-import { IFilterParams, syncChunkScrapping, urlGenerator } from '../helpers';
+import { IFilterParams, syncChunkScrapping, transformScrappedDate, urlGenerator } from '../helpers';
 import { scrapCandidates, scrapPagination } from '../services/scrapper';
 import { ICandidate, TYPE_SECTIONS } from '../../shared/types';
 import { DB } from '../../shared/services/db';
@@ -18,7 +18,12 @@ export const getCandidates = async ({
     url: string;
     section: TYPE_SECTIONS;
 }) => {
+    console.log('-----------------candidates-----------------');
+
     const CandidateDB = new DB<ICandidate>({ model: candidateModel });
+
+    await CandidateDB.connect();
+
     let candidates: ICandidate[] = [];
 
     if(fromCache) {
@@ -27,6 +32,8 @@ export const getCandidates = async ({
 
     if(!fromCache || !candidates.length) {
         const urlCandidates = urlGenerator({ url, section, filterParams });
+
+        console.log('urlCandidates', urlCandidates);
 
         const paginationCandidatesPages = await scrapPagination({ url: urlCandidates, browser });
 
@@ -47,6 +54,7 @@ export const getCandidates = async ({
         await CandidateDB.deleteAll();
 
         candidates = candidatesScrapped.flat(1);
+        candidates = candidates.map(transformScrappedDate) as ICandidate[];
 
         await Promise.all(
             candidates.map(async candidate => {

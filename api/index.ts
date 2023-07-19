@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import cookieSession from "cookie-session";
-import mongoose from 'mongoose';
 import 'dotenv/config';
 import routes from './route';
 

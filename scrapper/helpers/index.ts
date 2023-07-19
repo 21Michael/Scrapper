@@ -1,4 +1,6 @@
 import {
+    ICandidate,
+    IVacancy,
     TYPE_COMPANY_TYPE,
     TYPE_EMPLOYMENT,
     TYPE_ENGlISH_LVL,
@@ -10,7 +12,7 @@ import {
 } from '../../shared/types';
 import { chunk } from 'lodash';
 import { Browser } from 'puppeteer';
-import { SECTIONS } from '../../shared/constants';
+import { SECTIONS, MONTH_UKR_ARRAY } from '../../shared/constants';
 
 export interface IFilterParams {
     region?: TYPE_REGION[];
@@ -90,7 +92,7 @@ export const syncChunkScrapping = async ({
     let chunkResponse = [];
 
     for(let i = 0; i < chunks.length;) {
-        console.log(i);
+        console.log('Chunk processing №:', i);
 
         chunkResponse = await Promise.all(chunks[i].map(async ({ href }: { href: string; }) => {
             return scrapper({ url: url + href, browser });
@@ -107,4 +109,45 @@ export const syncChunkScrapping = async ({
     }
 
     return dataResponse;
+};
+
+export const transformScrappedDate = (data: IVacancy | ICandidate) => {
+    const { date } = data;
+    let transformedDate = '';
+
+    if(!date) {
+        return null;
+    }
+
+    if(date === 'сьогодні') {
+        transformedDate = new Date().toISOString();
+    }
+
+    if(date === 'вчора') {
+        const today = new Date();
+        const yesterday = new Date(today);
+
+        yesterday.setDate(today.getDate() - 1);
+
+        transformedDate = yesterday.toISOString();
+    }
+
+    if(new RegExp(MONTH_UKR_ARRAY.join('|')).test(date)) {
+        const monthRegExp = new RegExp(`${MONTH_UKR_ARRAY.join('|')}+`, 'g');
+
+        const month = date.match(monthRegExp)?.[0];
+        const day = date.match(/\d+/g)?.[0];
+
+        if (!month || !day) {
+            return null;
+        }
+
+        const dayNumber = new Date(day);
+        const year = dayNumber.getFullYear();
+        const monthNumber = MONTH_UKR_ARRAY.indexOf(month) + 1;
+
+        transformedDate = `${year}-${monthNumber}-01T00:00:00.000Z`;
+    }
+
+    return { ...data, date: transformedDate };
 };

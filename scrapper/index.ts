@@ -1,6 +1,13 @@
 import puppeteer from 'puppeteer';
-import { URL, SECTIONS, PROGRAMMING_LANGUAGE, REGION } from '../shared/constants';
-import { getVacancies, getCandidates } from './controller';
+import express from 'express';
+import 'dotenv/config';
+import routes from './route';
+import { URL } from '../shared/constants';
+
+const app = express();
+const port: string | number = process.env.PORT || 4000;
+
+app.use(express.json());
 
 (async () => {
     try {
@@ -9,36 +16,31 @@ import { getVacancies, getCandidates } from './controller';
             args: ['--no-sandbox']
         });
 
-        // Scrap Vacancies Data
-        await getVacancies({
-            url: URL,
-            fromCache: true,
-            section: SECTIONS.jobs,
-            browser,
-            filterParams: {
-                region: [REGION.UKR],
-                programmingLanguage: [PROGRAMMING_LANGUAGE['Node.js']]
-            }
+        app.use('/', function (req: any, res: any, next) {
+            req.scrapp_config = {
+                browser,
+                url: URL
+            };
+            next();
+        }, routes);
+
+        const server = app.listen(port, () => {
+            console.log('Server works on port: ' + port);
         });
 
-        // console.log(vacancies);
+        process.on('SIGINT', async () => {
+            console.log('Closing http server.');
 
-        // Scrap Candidates Data
-        await getCandidates({
-            url: URL,
-            fromCache: true,
-            section: SECTIONS.developers,
-            browser,
-            filterParams: {
-                region: [REGION.UKR],
-                programmingLanguage: [PROGRAMMING_LANGUAGE['Node.js']]
-            }
+            await browser.close();
+
+            server.close((err) => {
+                console.log('Http server closed.');
+                process.exit(err ? 1 : 0);
+            });
         });
-
-        // console.log(candidates);
-        console.log('Scrapping Finished');
-        await browser.close();
     } catch (e) {
         console.log('Error:', e);
+
+        process.exit(1);
     }
 })();
