@@ -60,11 +60,16 @@ services:
     networks:
       - scrapper-network
 
-  scrapper-client:
-    build: ./client
+  scrapper-client-dev:
+    build:
+      context: ./client
+      dockerfile: Dockerfile-dev # Dockerfile-dev
     ports:
       - 3000:3000
-    container_name: scrapper-client
+    volumes:
+      - ./shared:/usr/shared
+      - ./client:/usr/client
+    container_name: scrapper-client-dev
     healthcheck:
       test: curl -f localhost:3000/healthy
       interval: 10s
@@ -72,6 +77,25 @@ services:
       retries: 3
     depends_on:
       - scrapper-api
+    networks:
+      - scrapper-network
+
+  scrapper-client-prod:
+    build:
+      context: ./client
+      dockerfile: Dockerfile-prod # Dockerfile-dev
+    ports:
+      - 8080:80
+    container_name: scrapper-client-prod
+    healthcheck:
+      test: curl -f localhost:8080/healthy
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - scrapper-api
+    stdin_open: true
+    tty: true
     networks:
       - scrapper-network
 
