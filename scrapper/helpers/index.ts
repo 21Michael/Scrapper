@@ -142,12 +142,11 @@ export const transformScrappedDate = (data: IVacancy | ICandidate) => {
             return null;
         }
 
-        const dayNumber = new Date(day);
-        const year = dayNumber.getFullYear();
+        const year = new Date().getFullYear();
         const monthNumber = MONTH_UKR_ARRAY.indexOf(month) + 1;
 
-        transformedDate = `${year}-${monthNumber}-01T00:00:00.000Z`;
+        transformedDate = `${year}-${monthNumber}-${day}`;
     }
 
-    return { ...data, date: transformedDate };
+    return { ...data, date: new Date(transformedDate) };
 };

@@ -25,3 +25,31 @@ export interface IVacancy {
   companyType: string | null;
   expLVL: string | null;
 }
+
+export interface ICandidateTransformed {
+  name: string | null;
+  href: string | null;
+  salary: string | null;
+  date: Date | null;
+  englishLevel: string | null;
+  expLVL: string | null;
+  city: string | null;
+  views: string | null;
+  skills: string[] | null;
+}
+
+export interface IVacancyTransformed {
+  name: string | null;
+  href: string | null;
+  date: Date | null;
+  views: string | null;
+  responses: string | null;
+  salaryForkMin: string | null;
+  salaryForkMax: string | null;
+  relocate: boolean;
+  countries: string[] | null;
+  cities: string[] | null;
+  englishLevel: string | null;
+  companyType: string | null;
+  expLVL: string | null;
+}

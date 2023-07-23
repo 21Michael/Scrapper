@@ -1,7 +1,7 @@
 import { IFilterParams, syncChunkScrapping, transformScrappedDate, urlGenerator } from '../helpers';
 import { scrapPagination, scrapVacancies } from '../services/scrapper';
 import { Browser } from 'puppeteer';
-import { IVacancy, TYPE_SECTIONS } from '../../shared/types';
+import { IVacancy, IVacancyTransformed, TYPE_SECTIONS } from '../../shared/types';
 import { DB } from '../../shared/services/db';
 import { vacancyModel } from '../../shared/models';
 
@@ -20,9 +20,9 @@ export const getVacancies = async ({
 }) => {
     console.log('-----------------vacancies-----------------');
 
-    const VacancyDB = new DB<IVacancy>({ model: vacancyModel });
+    const VacancyDB = new DB<IVacancyTransformed>({ model: vacancyModel });
 
-    let vacancies: IVacancy[] = [];
+    let vacancies = [];
 
     if(fromCache) {
         vacancies = await VacancyDB.getAll();
@@ -52,10 +52,10 @@ export const getVacancies = async ({
         await VacancyDB.deleteAll();
 
         vacancies = vacanciesScrapped.flat(1);
-        vacancies = vacancies.map(transformScrappedDate) as IVacancy[];
+        const vacanciesTransformed = vacancies.map(transformScrappedDate) as IVacancyTransformed[];
 
         await Promise.all(
-            vacancies.map(async vacancy => {
+            vacanciesTransformed.map(async vacancy => {
                 await VacancyDB.create(vacancy);
             })
         );

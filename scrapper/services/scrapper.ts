@@ -53,7 +53,10 @@ export const scrapCandidates = async ({
     const candidatesPages: ICandidate[] = await page.evaluate((EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY, MONTH_UKR_ARRAY, CITY_UKR_ARRAY) => {
         const englishLevelRegExp = new RegExp(`${ENGlISH_LVL_ARRAY.join('|')}+`, 'g');
         const expLVLRegExp = new RegExp(`${EXP_LVL_ARRAY.join('|')}+`, 'g');
-        const dateRegExp = new RegExp(`(сьогодні)|(вчора)|(\d.*${MONTH_UKR_ARRAY.join('|')}+)`, 'g');
+
+        const todayRegExp = new RegExp('(сьогодні)|(вчора)', 'g');
+        const monthRegExp = new RegExp(`(${MONTH_UKR_ARRAY.join('|')})`, 'g');
+
         const cityRegExp = new RegExp(`${CITY_UKR_ARRAY.join('|')}+`, 'g');
 
         const candidatesElement = document.querySelector('.searchresults') as Element;
@@ -62,6 +65,8 @@ export const scrapCandidates = async ({
         return candidatesElements.map(( candidate: any) => {
             const developerDetailsElement = candidate.querySelector('.order-1').lastElementChild;
             const developerDetailsElementText = developerDetailsElement?.textContent;
+            const dateElementText = developerDetailsElement.firstElementChild.textContent.replace(/\s/g, '');
+
             const nameText = candidate.querySelector('.profile').textContent;
             const href = candidate.querySelector('.profile').getAttribute('href');
             const salaryText = candidate.querySelector('.text-success').textContent;
@@ -70,7 +75,11 @@ export const scrapCandidates = async ({
 
             const englishLevel = developerDetailsElementText.match(englishLevelRegExp)?.[0] || null;
             const expLVL = developerDetailsElementText.match(expLVLRegExp)?.[0] || null;
-            const date = developerDetailsElementText.match(dateRegExp)?.[0] || null;
+
+            const today = dateElementText.match(todayRegExp)?.[0] || null;
+            const day = dateElementText.match(/(?<=Опубліковано)\d+/g)?.[0] || null;
+            const month = dateElementText.match(monthRegExp)?.[0] || null;
+
             const city = developerDetailsElementText.match(cityRegExp)?.[0] || null;
             const name = nameText.match(/\w+/g)?.join(' ') || null;
             const salary = salaryText.match(/\$\d+/g)?.[0] || null;
@@ -81,7 +90,7 @@ export const scrapCandidates = async ({
                 name,
                 href,
                 salary,
-                date,
+                date: today || (day + ' ' + month),
                 englishLevel,
                 expLVL,
                 city,

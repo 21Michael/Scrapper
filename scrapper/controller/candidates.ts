@@ -1,7 +1,7 @@
 import { Browser } from 'puppeteer';
 import { IFilterParams, syncChunkScrapping, transformScrappedDate, urlGenerator } from '../helpers';
 import { scrapCandidates, scrapPagination } from '../services/scrapper';
-import { ICandidate, TYPE_SECTIONS } from '../../shared/types';
+import { ICandidate, TYPE_SECTIONS, ICandidateTransformed } from '../../shared/types';
 import { DB } from '../../shared/services/db';
 import { candidateModel } from '../../shared/models';
 
@@ -20,9 +20,9 @@ export const getCandidates = async ({
 }) => {
     console.log('-----------------candidates-----------------');
 
-    const CandidateDB = new DB<ICandidate>({ model: candidateModel });
+    const CandidateDB = new DB<ICandidateTransformed>({ model: candidateModel });
 
-    let candidates: ICandidate[] = [];
+    let candidates = [];
 
     if(fromCache) {
         candidates = await CandidateDB.getAll();
@@ -52,10 +52,11 @@ export const getCandidates = async ({
         await CandidateDB.deleteAll();
 
         candidates = candidatesScrapped.flat(1);
-        candidates = candidates.map(transformScrappedDate) as ICandidate[];
+
+        const candidatesTransformed = candidates.map(transformScrappedDate) as ICandidateTransformed[];
 
         await Promise.all(
-            candidates.map(async candidate => {
+            candidatesTransformed.map(async candidate => {
                 await CandidateDB.create(candidate);
             })
         );

@@ -8,7 +8,7 @@ import {
     ENGlISH_LVL,
     OTHER
 } from '../constants';
-import { ICandidate, IVacancy } from './entities';
+import { ICandidate, IVacancy, ICandidateTransformed, IVacancyTransformed } from './entities';
 
 export type TYPE_SECTIONS = (typeof SECTIONS)[keyof typeof SECTIONS];
 export type TYPE_REGION = (typeof REGION)[keyof typeof REGION];
@@ -19,4 +19,4 @@ export type TYPE_COMPANY_TYPE = (typeof COMPANY_TYPE)[keyof typeof COMPANY_TYPE]
 export type TYPE_ENGlISH_LVL = (typeof ENGlISH_LVL)[keyof typeof ENGlISH_LVL];
 export type TYPE_OTHER = (typeof OTHER)[keyof typeof OTHER];
 
-export { ICandidate, IVacancy };
+export { ICandidate, IVacancy, ICandidateTransformed, IVacancyTransformed };
