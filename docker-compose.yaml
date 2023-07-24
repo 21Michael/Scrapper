@@ -22,7 +22,7 @@ services:
   scrapper-service:
     build: ./scrapper
     environment:
-      - STAGE=prod # dev
+      - STAGE=dev # dev
     volumes:
       - ./scrapper:/usr/scrapper
       - ./shared:/usr/shared
@@ -42,7 +42,7 @@ services:
   scrapper-api:
     build: ./api
     environment:
-      - STAGE=prod # dev
+      - STAGE=dev # dev / prod
     volumes:
       - ./shared:/usr/shared
       - ./api:/usr/api

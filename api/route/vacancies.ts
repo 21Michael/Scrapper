@@ -7,7 +7,8 @@ const router = createRouter.Router();
 const routes = {
   getAll: async (req: any, res: any) => {
     try {
-      const vacancies: IVacancy[] = await VacancyController.getAll();
+      const sortParams = req.query as Record<string, 1 | -1>;
+      const vacancies: IVacancy[] = await VacancyController.getAll({ sortParams });
 
       if (vacancies) {
         res.json(vacancies);

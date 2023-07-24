@@ -12,8 +12,8 @@ export default class Candidate {
     await this.DB.deleteAll();
   }
 
-  async getAll() {
-    const data = await this.DB.getAll();
+  async getAll({ sortParams } : { sortParams?: Record<string, 1 | -1> }) {
+    const data = await this.DB.getAll(sortParams);
 
     return data;
   }
