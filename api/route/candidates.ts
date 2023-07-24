@@ -1,6 +1,6 @@
 import { CandidateController } from "../controller";
 import createRouter from "express";
-import { ICandidate } from "../../shared/types";
+import { ICandidateTransformed } from '../../shared/types';
 
 const router = createRouter.Router();
 
@@ -8,7 +8,7 @@ const routes = {
   getAll: async (req: any, res: any) => {
     try {
       const sortParams = req.query as Record<string, 1 | -1>;
-      const candidates: ICandidate[] = await CandidateController.getAll({ sortParams });
+      const candidates: ICandidateTransformed[] = await CandidateController.getAll({ sortParams });
 
       if (candidates) {
         res.json(candidates);
@@ -19,8 +19,8 @@ const routes = {
   },
   create: async (req: any, res: any) => {
     try {
-      const candidate: ICandidate = req.body as ICandidate;
-      const newCandidate: ICandidate = await CandidateController.create(candidate);
+      const candidate: ICandidateTransformed = req.body as ICandidateTransformed;
+      const newCandidate: ICandidateTransformed = await CandidateController.create(candidate);
 
       if (newCandidate) {
         res.json(newCandidate);

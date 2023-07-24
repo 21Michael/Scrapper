@@ -1,10 +1,10 @@
-import { IVacancy } from "../../shared/types";
+import { IVacancyTransformed } from '../../shared/types';
 import { DB } from '../../shared/services/db';
 
 export default class Vacancy {
-  private DB: DB<IVacancy>;
+  private DB: DB<IVacancyTransformed>;
 
-  constructor({ DB }: { DB: DB<IVacancy>; }) {
+  constructor({ DB }: { DB: DB<IVacancyTransformed>; }) {
     this.DB = DB;
   }
 
@@ -18,7 +18,7 @@ export default class Vacancy {
     return data;
   }
 
-  async create(data: IVacancy) {
+  async create(data: IVacancyTransformed) {
     const newData = await this.DB.create(data);
 
     return newData;

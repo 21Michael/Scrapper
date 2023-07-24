@@ -1,5 +1,5 @@
 import { Browser } from 'puppeteer';
-import { EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY, MONTH_UKR_ARRAY, CITY_UKR_ARRAY } from '../../shared/constants';
+import { EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY, MONTH_UKR_ARRAY, CITY_UKR_ARRAY, HREF_PREFIX } from '../../shared/constants';
 import { ICandidate, IVacancy } from '../../shared/types';
 
 export const scrapPagination = async ({
@@ -50,14 +50,13 @@ export const scrapCandidates = async ({
 
     await page.goto(url);
 
-    const candidatesPages: ICandidate[] = await page.evaluate((EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY, MONTH_UKR_ARRAY, CITY_UKR_ARRAY) => {
+    const candidatesPages: ICandidate[] = await page.evaluate((HREF_PREFIX, EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY, MONTH_UKR_ARRAY, CITY_UKR_ARRAY) => {
         const englishLevelRegExp = new RegExp(`${ENGlISH_LVL_ARRAY.join('|')}+`, 'g');
-        const expLVLRegExp = new RegExp(`${EXP_LVL_ARRAY.join('|')}+`, 'g');
 
         const todayRegExp = new RegExp('(сьогодні)|(вчора)', 'g');
         const monthRegExp = new RegExp(`(${MONTH_UKR_ARRAY.join('|')})`, 'g');
 
-        const cityRegExp = new RegExp(`${CITY_UKR_ARRAY.join('|')}+`, 'g');
+        const cityRegExp = new RegExp(`${CITY_UKR_ARRAY.join('|')}`, 'g');
 
         const candidatesElement = document.querySelector('.searchresults') as Element;
         const candidatesElements = Array.from(candidatesElement.querySelectorAll('.card'));
@@ -74,7 +73,7 @@ export const scrapCandidates = async ({
             const skillsText = candidate.querySelector('.card-body').lastElementChild.lastElementChild.textContent;
 
             const englishLevel = developerDetailsElementText.match(englishLevelRegExp)?.[0] || null;
-            const expLVL = developerDetailsElementText.match(expLVLRegExp)?.[0] || null;
+            const expLVL = developerDetailsElementText.match(/(Без досвіду)|(\d+.*досвіду)/g)?.[0] || null;
 
             const today = dateElementText.match(todayRegExp)?.[0] || null;
             const day = dateElementText.match(/(?<=Опубліковано)\d+/g)?.[0] || null;
@@ -87,8 +86,8 @@ export const scrapCandidates = async ({
             const skills = skillsText.match(/\w+/gi) || null;
 
             return {
-                name,
-                href,
+                name: developerDetailsElementText,
+                href: HREF_PREFIX + href,
                 salary,
                 date: today || (day + ' ' + month),
                 englishLevel,
@@ -99,7 +98,7 @@ export const scrapCandidates = async ({
             };
         });
 
-    }, EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY, MONTH_UKR_ARRAY, CITY_UKR_ARRAY);
+    }, HREF_PREFIX, EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY, MONTH_UKR_ARRAY, CITY_UKR_ARRAY);
 
     await page.close();
 
@@ -117,10 +116,9 @@ export const scrapVacancies = async ({
 
     await page.goto(url);
 
-    const vacanciesPages: IVacancy[] = await page.evaluate( (EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY) => {
+    const vacanciesPages: IVacancy[] = await page.evaluate( (HREF_PREFIX, EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY) => {
         const englishLevelRegExp = new RegExp(`${ENGlISH_LVL_ARRAY.join('|')}+`, 'g');
         const companyTypeRegExp = new RegExp(`${COMPANY_TYPE_ARRAY.join('|')}+`, 'g');
-        const expLVLRegExp = new RegExp(`${EXP_LVL_ARRAY.join('|')}+`, 'g');
 
         const vacancyElement = document.querySelector('.list-jobs') as Element;
         const vacancyElements = Array.from(vacancyElement.querySelectorAll('li'));
@@ -147,7 +145,7 @@ export const scrapVacancies = async ({
 
             const englishLevel = jobDetailsElementText.match(englishLevelRegExp)?.[0] || null;
             const companyType = jobDetailsElementText.match(companyTypeRegExp)?.[0] || null;
-            const expLVL = jobDetailsElementText.match(expLVLRegExp)?.[0] || null;
+            const expLVL = jobDetailsElementText.match(/(Без досвіду)|(\d+.*досвіду)/g)?.[0] || null;
             const date = dateText.match(/(\d+\s[а-я]+\s*|сьогодні)/)?.[0].trim() || null;
             const views = viewsText.match(/(\d+)/)?.[0].trim() || null;
             const responses = responsesText.match(/(\d+)/)?.[0].trim() || null;
@@ -156,7 +154,7 @@ export const scrapVacancies = async ({
 
             return {
                 name,
-                href,
+                href: HREF_PREFIX + href,
                 date,
                 views,
                 responses,
@@ -170,7 +168,7 @@ export const scrapVacancies = async ({
                 expLVL
             };
         });
-    }, EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY);
+    }, HREF_PREFIX, EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY);
 
     await page.close();
 

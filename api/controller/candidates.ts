@@ -1,10 +1,10 @@
 import { DB } from '../../shared/services/db';
-import { ICandidate } from '../../shared/types';
+import { ICandidateTransformed } from '../../shared/types';
 
 export default class Candidate {
-  private DB: DB<ICandidate>;
+  private DB: DB<ICandidateTransformed>;
 
-  constructor({ DB }: { DB: DB<ICandidate>; }) {
+  constructor({ DB }: { DB: DB<ICandidateTransformed>; }) {
     this.DB = DB;
   }
 
@@ -18,7 +18,7 @@ export default class Candidate {
     return data;
   }
 
-  async create(data: ICandidate) {
+  async create(data: ICandidateTransformed) {
     const newData = await this.DB.create(data);
 
     return newData;

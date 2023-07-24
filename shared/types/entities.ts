@@ -29,12 +29,12 @@ export interface IVacancy {
 export interface ICandidateTransformed {
   name: string | null;
   href: string | null;
-  salary: string | null;
+  salary: number | null;
   date: Date | null;
   englishLevel: string | null;
   expLVL: string | null;
   city: string | null;
-  views: string | null;
+  views: number | null;
   skills: string[] | null;
 }
 
@@ -42,10 +42,10 @@ export interface IVacancyTransformed {
   name: string | null;
   href: string | null;
   date: Date | null;
-  views: string | null;
-  responses: string | null;
-  salaryForkMin: string | null;
-  salaryForkMax: string | null;
+  views: number | null;
+  responses: number | null;
+  salaryForkMin: number | null;
+  salaryForkMax: number | null;
   relocate: boolean;
   countries: string[] | null;
   cities: string[] | null;

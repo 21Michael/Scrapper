@@ -1,6 +1,6 @@
 import createRouter from 'express';
 import { getCandidates } from '../controller';
-import { ICandidate } from '../../shared/types';
+import { ICandidateTransformed } from '../../shared/types';
 import { SECTIONS } from '../../shared/constants';
 
 const router = createRouter.Router();
@@ -11,7 +11,7 @@ const routes = {
             const { fromCache, filterParams } = req.query;
             const { url, browser } = req.scrapp_config;
 
-            const candidates: ICandidate[] | Error = await getCandidates({
+            const candidates: ICandidateTransformed[] | Error = await getCandidates({
                 url,
                 fromCache: fromCache === 'true',
                 section: SECTIONS.developers,

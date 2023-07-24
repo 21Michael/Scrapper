@@ -111,12 +111,57 @@ export const syncChunkScrapping = async ({
     return dataResponse;
 };
 
-export const transformScrappedDate = (data: IVacancy | ICandidate) => {
+export const transformScrappedVacancies = (data: IVacancy) => {
+    const date = transformScrappedDate(data);
+    const numbers = transformScrappedVacanciesNumbers(data);
+
+    return {
+        ...data,
+        ...date,
+        ...numbers
+    };
+};
+
+export const transformScrappedCandidates = (data: ICandidate) => {
+    const date = transformScrappedDate(data);
+    const numbers = transformScrappedCandidatesNumbers(data);
+
+    return {
+        ...data,
+        ...date,
+        ...numbers
+    };
+};
+
+
+const transformScrappedVacanciesNumbers = (data: IVacancy) => {
+    const { responses, views, salaryForkMin, salaryForkMax } = data;
+
+    return {
+        responses: Number(responses),
+        views: Number(views),
+        salaryForkMin: Number(salaryForkMin) || null,
+        salaryForkMax: Number(salaryForkMax) || null,
+    };
+};
+
+const transformScrappedCandidatesNumbers = (data: ICandidate) => {
+    const { views, salary } = data;
+
+    const salaryNum = salary?.match(/\d+/g)?.[0];
+
+    return {
+        views: Number(views),
+        salary: Number(salaryNum)
+    };
+};
+
+const transformScrappedDate = (data: IVacancy | ICandidate) => {
     const { date } = data;
     let transformedDate = '';
 
     if(!date) {
-        return null;
+        return { date: null };
     }
 
     if(date === 'сьогодні') {
@@ -139,7 +184,7 @@ export const transformScrappedDate = (data: IVacancy | ICandidate) => {
         const day = date.match(/\d+/g)?.[0];
 
         if (!month || !day) {
-            return null;
+            return { date: null };
         }
 
         const year = new Date().getFullYear();
@@ -148,5 +193,5 @@ export const transformScrappedDate = (data: IVacancy | ICandidate) => {
         transformedDate = `${year}-${monthNumber}-${day}`;
     }
 
-    return { ...data, date: new Date(transformedDate) };
+    return { date: new Date(transformedDate) };
 };
