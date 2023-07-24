@@ -6,7 +6,7 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - ./data:/data/db
+      - ../../data:/data/db
     container_name: scrapper-db
     command: mongod
     healthcheck:
@@ -20,12 +20,13 @@ services:
       - scrapper-network
 
   scrapper-service:
-    build: ./scrapper
+    build: ../../scrapper
+    image: mikhail21/scrapper-service:latest
     environment:
       - STAGE=dev # dev
     volumes:
-      - ./scrapper:/usr/scrapper
-      - ./shared:/usr/shared
+      - ../../scrapper:/usr/scrapper
+      - ../../shared:/usr/shared
     ports:
       - 4000:4000
     container_name: scrapper-service
@@ -40,12 +41,13 @@ services:
       - scrapper-network
 
   scrapper-api:
-    build: ./api
+    build: ../../api
+    image: mikhail21/scrapper-api:latest
     environment:
       - STAGE=dev # dev / prod
     volumes:
-      - ./shared:/usr/shared
-      - ./api:/usr/api
+      - ../../shared:/usr/shared
+      - ../../api:/usr/api
     ports:
       - 4001:4001
     container_name: scrapper-api
@@ -62,13 +64,14 @@ services:
 
   scrapper-client-dev:
     build:
-      context: ./client
+      context: ../../client
       dockerfile: Dockerfile-dev # Dockerfile-dev
+    image: mikhail21/scrapper-client-dev:latest
     ports:
       - 3000:3000
     volumes:
-      - ./shared:/usr/shared
-      - ./client:/usr/client
+      - ../../shared:/usr/shared
+      - ../../client:/usr/client
     container_name: scrapper-client-dev
     healthcheck:
       test: curl -f localhost:3000/healthy
@@ -82,8 +85,9 @@ services:
 
   scrapper-client-prod:
     build:
-      context: ./client
+      context: ../../client
       dockerfile: Dockerfile-prod # Dockerfile-dev
+    image: mikhail21/scrapper-client-prod:latest
     ports:
       - 8080:80
     container_name: scrapper-client-prod
