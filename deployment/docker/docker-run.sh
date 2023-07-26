@@ -1,5 +1,5 @@
 # 1) build and run
-docker compose up -d --build
+#docker compose up -d --build
 
 ## 2) Stop Remove containers
 #docker compose down

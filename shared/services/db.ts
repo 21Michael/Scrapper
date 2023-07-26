@@ -26,8 +26,8 @@ export class DB<T> {
     }
 }
 
-export const connectToDB = async () => {
+export const connectToDB = async ({ DB_IP, DB_PORT }: { DB_IP: string; DB_PORT: string; }) => {
     console.log('Connecting to DB')
-    await mongoose.connect('mongodb://scrapper-db:27017');
+    await mongoose.connect(`mongodb://${DB_IP}:${DB_PORT}`);
     console.log('Connected to DB successfully')
 }

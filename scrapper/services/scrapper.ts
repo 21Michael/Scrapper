@@ -86,7 +86,7 @@ export const scrapCandidates = async ({
             const skills = skillsText.match(/\w+/gi) || null;
 
             return {
-                name: developerDetailsElementText,
+                name,
                 href: HREF_PREFIX + href,
                 salary,
                 date: today || (day + ' ' + month),

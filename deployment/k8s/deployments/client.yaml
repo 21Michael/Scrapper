@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      service: scrapper-client
+  template:
+    metadata:
+      labels:
+        service: scrapper-client
+    spec:
+      containers:
+        - name: scrapper-client
+          image: mikhail21/scrapper-client-dev:latest
+          ports:
+            - containerPort: 3000
+

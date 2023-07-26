@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: scrapper-api
+  template:
+    metadata:
+      labels:
+        service: scrapper-api
+    spec:
+      containers:
+        - name: scrapper-api
+          image: mikhail21/scrapper-api:latest
+          ports:
+            - containerPort: 4001
+          env:
+            - name: SCRAPPER_DB_PORT
+              value: '27017'
+            - name: SCRAPPER_DB_IP
+              value: db-cluster-ip-service
+            - name: STAGE
+              value: dev
