@@ -23,7 +23,9 @@ services:
     build: ../../scrapper
     image: mikhail21/scrapper-service:latest
     environment:
-      - STAGE=dev # dev
+      - STAGE=prod # dev
+      - SCRAPPER_DB_PORT=27017
+      - SCRAPPER_DB_IP=scrapper-db
     volumes:
       - ../../scrapper:/usr/scrapper
       - ../../shared:/usr/shared
@@ -44,7 +46,9 @@ services:
     build: ../../api
     image: mikhail21/scrapper-api:latest
     environment:
-      - STAGE=dev # dev / prod
+      - STAGE=prod # dev / prod
+      - SCRAPPER_DB_PORT=27017
+      - SCRAPPER_DB_IP=scrapper-db
     volumes:
       - ../../shared:/usr/shared
       - ../../api:/usr/api

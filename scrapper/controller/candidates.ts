@@ -40,7 +40,7 @@ export const getCandidates = async ({
         paginationPages: paginationCandidatesPages,
         url: urlCandidates,
         browser,
-        chunkSize: 100,
+        chunkSize: 50,
         scrapper: scrapCandidates
     });
 

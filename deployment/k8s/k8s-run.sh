@@ -1,11 +1,14 @@
 # 1) Start minikube (local kubernetes cluster)
 #minikube start
+#minikube ip
+#minikube dashboard
+#minikube stop
 
 # 2) Get commands:
 #kubectl get deployments
 #kubectl get services
 #kubectl get storageclass
-kubectl get pods
+#kubectl get pods
 #kubectl get pv
 
 # 3) Apply commands:
@@ -17,5 +20,9 @@ kubectl get pods
 #kubectl delete deployment scrapper-deployment
 #kubectl delete deployment api-deployment
 
+#kubectl delete deployment --all
+#kubectl delete services --all
+#kubectl delete pods --all
+
 # 5) Logs commands:
-#kubectl logs api-deployment-594577d79-94ngw
+#kubectl logs scrapper-deployment-7cbb4dcb5-cgd4m

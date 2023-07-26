@@ -26,7 +26,7 @@ app.use(cookieSession(cookieOptions));
   try {
     await connectToDB({ DB_IP, DB_PORT });
 
-    app.use('/', routes);
+    app.use('/api', routes);
 
     app.listen(port, () => {
       console.log("Server works on port: " + port);

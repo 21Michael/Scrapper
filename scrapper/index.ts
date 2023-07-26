@@ -21,7 +21,7 @@ app.use(express.json());
 
         await connectToDB({ DB_IP, DB_PORT });
 
-        app.use('/', function (req: any, res: any, next) {
+        app.use('/scrapper', function (req: any, res: any, next) {
             req.scrapp_config = {
                 browser,
                 url: URL
