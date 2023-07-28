@@ -9,18 +9,20 @@ RUN apt-get update \
 
 WORKDIR /usr/scrapper
 
-# Dev:
-#COPY . .
-#
-#RUN npm i
-
-# Prod:
-COPY ./package.json ./package.json
-COPY ./package-lock.json ./package-lock.json
+COPY ./scrapper/package.json ./package.json
+COPY ./scrapper/package-lock.json ./package-lock.json
 
 RUN npm i
 
-COPY ./dist ./dist
+COPY ./scrapper .
+
+WORKDIR /usr/shared
+
+COPY  ./shared .
+
+RUN npm i
+
+WORKDIR /usr/scrapper
 
 EXPOSE 4000
 

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: scrapper-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       service: scrapper-service
@@ -23,4 +23,4 @@ spec:
             - name: SCRAPPER_DB_IP
               value: db-cluster-ip-service
             - name: STAGE
-              value: prod
+              value: dev

@@ -6,7 +6,7 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - ../../data:/data/db
+      - ../../db/data:/data/db
     container_name: scrapper-db
     command: mongod
     healthcheck:
@@ -20,7 +20,9 @@ services:
       - scrapper-network
 
   scrapper-service:
-    build: ../../scrapper
+    build:
+      context: ../../
+      dockerfile: scrapper/Dockerfile
     image: mikhail21/scrapper-service:latest
     environment:
       - STAGE=prod # dev
@@ -43,10 +45,12 @@ services:
       - scrapper-network
 
   scrapper-api:
-    build: ../../api
+    build:
+      context: ../../
+      dockerfile: api/Dockerfile
     image: mikhail21/scrapper-api:latest
     environment:
-      - STAGE=prod # dev / prod
+      - STAGE=dev # dev / prod
       - SCRAPPER_DB_PORT=27017
       - SCRAPPER_DB_IP=scrapper-db
     volumes:

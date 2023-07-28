@@ -2,18 +2,20 @@ FROM node:18.16.1
 
 WORKDIR /usr/api
 
-# Dev:
-#COPY . .
-#
-#RUN npm i
-
-# Prod:
-COPY ./package.json ./package.json
-COPY ./package-lock.json ./package-lock.json
+COPY ./api/package.json ./package.json
+COPY ./api/package-lock.json ./package-lock.json
 
 RUN npm i
 
-COPY ./dist ./dist
+COPY ./api .
+
+WORKDIR /usr/shared
+
+COPY  ./shared .
+
+RUN npm i
+
+WORKDIR /usr/api
 
 EXPOSE 4001
 

@@ -1,0 +1,44 @@
+apiVersion: skaffold/v4beta6
+kind: Config
+metadata:
+  name: k8s
+build:
+  local:
+    push: false
+  artifacts:
+    - image: mikhail21/scrapper-client-dev
+      context: ../../client
+      docker:
+        dockerfile: Dockerfile-dev
+      sync:
+        manual:
+          - src: "src/**/*.js"
+            dest: .
+          - src: "src/**/*.css"
+            dest: .
+          - src: "src/**/*.html"
+            dest: .
+    - image: mikhail21/scrapper-api
+      context: ../../
+      docker:
+        dockerfile: api/Dockerfile
+      sync:
+        manual:
+          - src: "*.ts"
+            dest: .
+    - image: mikhail21/scrapper-service
+      context: ../../
+      docker:
+        dockerfile: scrapper/Dockerfile
+      sync:
+        manual:
+          - src: "*.ts"
+            dest: .
+manifests:
+  rawYaml:
+    - deployments/api.yaml
+    - deployments/client.yaml
+    - deployments/scrapper.yaml
+    - services/api-cluster-ip.yaml
+    - services/client-cluster-ip.yaml
+    - services/scrapper-cluster-ip.yaml

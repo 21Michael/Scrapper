@@ -8,7 +8,7 @@
 #kubectl get deployments
 #kubectl get services
 #kubectl get storageclass
-#kubectl get pods
+kubectl get pods
 #kubectl get pv
 
 # 3) Apply commands:
@@ -25,4 +25,4 @@
 #kubectl delete pods --all
 
 # 5) Logs commands:
-#kubectl logs scrapper-deployment-7cbb4dcb5-cgd4m
+#kubectl logs api-deployment-b8659987f-svlc6
