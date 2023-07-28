@@ -11,7 +11,7 @@ const routes = {
       const candidates: ICandidateTransformed[] = await CandidateController.getAll({ sortParams });
 
       if (candidates) {
-        res.json('');
+        res.json(candidates);
       }
     } catch (err: any) {
       res.status(404).send(err.message);
