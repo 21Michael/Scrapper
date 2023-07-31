@@ -26,8 +26,8 @@ export class DB<T> {
     }
 }
 
-export const connectToDB = async ({ DB_IP, DB_PORT }: { DB_IP: string; DB_PORT: string; }) => {
+export const connectToDB = async ({ DB_HOST }: { DB_HOST: string; }) => {
     console.log('Connecting to DB')
-    await mongoose.connect(`mongodb://${DB_IP}:${DB_PORT}`);
+    await mongoose.connect(`mongodb://${DB_HOST}`);
     console.log('Connected to DB successfully')
 }

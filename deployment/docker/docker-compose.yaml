@@ -25,9 +25,8 @@ services:
       dockerfile: scrapper/Dockerfile
     image: mikhail21/scrapper-service:latest
     environment:
-      - STAGE=prod # dev
-      - SCRAPPER_DB_PORT=27017
-      - SCRAPPER_DB_IP=scrapper-db
+      - STAGE=dev # dev
+      - SCRAPPER_DB_HOST=scrapper-db:27017
     volumes:
       - ../../scrapper:/usr/scrapper
       - ../../shared:/usr/shared
@@ -51,8 +50,7 @@ services:
     image: mikhail21/scrapper-api:latest
     environment:
       - STAGE=dev # dev / prod
-      - SCRAPPER_DB_PORT=27017
-      - SCRAPPER_DB_IP=scrapper-db
+      - SCRAPPER_DB_HOST=scrapper-db:27017
     volumes:
       - ../../shared:/usr/shared
       - ../../api:/usr/api

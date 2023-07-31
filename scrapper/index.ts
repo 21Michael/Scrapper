@@ -7,8 +7,7 @@ import { connectToDB } from '../shared/services/db';
 
 const app = express();
 const port: string | number = process.env.PORT || 4000;
-const DB_IP: string = process.env.SCRAPPER_DB_IP || '';
-const DB_PORT: string = process.env.SCRAPPER_DB_PORT || '';
+const DB_HOST: string = process.env.SCRAPPER_DB_HOST || '';
 
 app.use(express.json());
 
@@ -19,7 +18,7 @@ app.use(express.json());
             args: ['--no-sandbox']
         });
 
-        await connectToDB({ DB_IP, DB_PORT });
+        await connectToDB({ DB_HOST });
 
         app.use('/scrapper', function (req: any, res: any, next) {
             req.scrapp_config = {

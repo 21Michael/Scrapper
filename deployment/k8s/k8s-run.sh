@@ -8,8 +8,9 @@
 #kubectl get deployments
 #kubectl get services
 #kubectl get storageclass
-kubectl get pods
+#kubectl get pods
 #kubectl get pv
+#kubectl get namespaces
 
 # 3) Apply commands:
 #kubectl apply -f deployments
@@ -25,4 +26,4 @@ kubectl get pods
 #kubectl delete pods --all
 
 # 5) Logs commands:
-#kubectl logs api-deployment-b8659987f-svlc6
+#kubectl logs api-deployment-6676b9759-nzqpc

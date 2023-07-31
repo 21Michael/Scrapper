@@ -18,9 +18,7 @@ spec:
           ports:
             - containerPort: 4000
           env:
-            - name: SCRAPPER_DB_PORT
-              value: '27017'
-            - name: SCRAPPER_DB_IP
-              value: db-cluster-ip-service
+            - name: SCRAPPER_DB_HOST
+              value: 'db-cluster-ip-service.default'
             - name: STAGE
-              value: dev
+              value: prod
