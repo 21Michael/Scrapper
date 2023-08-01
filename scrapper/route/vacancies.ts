@@ -9,10 +9,11 @@ const routes = {
     scrapp: async (req: any, res: any) => {
         try {
             const { fromCache, filterParams } = req.query;
-            const { url, browser } = req.scrapp_config;
+            const { url, browser, SCRAPPER_WORKER_HOST } = req.scrapp_config;
 
             const vacancies: IVacancyTransformed[] | Error = await getVacancies({
                 url,
+                SCRAPPER_WORKER_HOST,
                 fromCache: fromCache === 'true',
                 section: SECTIONS.jobs,
                 browser,

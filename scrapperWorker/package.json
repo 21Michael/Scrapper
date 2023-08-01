@@ -1,0 +1,43 @@
+{
+  "name": "scrapperworker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon - exec ts-node index.ts",
+    "prod": "npm run build && node ./dist/scrapperWorker/index.js",
+    "start": "npm run $STAGE"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/lodash": "^4.14.195",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "eslint": "^8.44.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.0.3",
+    "lodash": "^4.17.21",
+    "nodemon": "^3.0.1",
+    "puppeteer": "^20.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/21Michael/Scrapper.git"
+  },
+  "keywords": [
+    "puppeteer",
+    "node.js"
+  ],
+  "author": "Mikhail Rudiev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/21Michael/Scrapper/issues"
+  },
+  "homepage": "https://github.com/21Michael/Scrapper#readme"
+}

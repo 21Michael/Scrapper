@@ -27,6 +27,7 @@ services:
     environment:
       - STAGE=dev # dev
       - SCRAPPER_DB_HOST=scrapper-db:27017
+      - SCRAPPER_WORKER_HOST=scrapper-worker:4002
     volumes:
       - ../../scrapper:/usr/scrapper
       - ../../shared:/usr/shared
@@ -40,6 +41,29 @@ services:
       retries: 3
     depends_on:
       - scrapper-db
+    networks:
+      - scrapper-network
+
+  scrapper-worker:
+    build:
+      context: ../../
+      dockerfile: scrapperWorker/Dockerfile
+    image: mikhail21/scrapper-worker:latest
+    environment:
+      - STAGE=dev # dev
+    volumes:
+      - ../../scrapperWorker:/usr/scrapperWorker
+      - ../../shared:/usr/shared
+    ports:
+      - 4002:4002
+#    container_name: scrapper-worker
+    healthcheck:
+      test: curl -f localhost:4002/healthy
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - scrapper-service
     networks:
       - scrapper-network
 

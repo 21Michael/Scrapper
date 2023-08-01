@@ -1,14 +1,10 @@
 import puppeteer from 'puppeteer';
-import express from 'express';
 import 'dotenv/config';
+import express from 'express';
 import routes from './route';
-import { URL } from '../shared/constants';
-import { connectToDB } from '../shared/services/db';
 
 const app = express();
-const port: string | number = process.env.PORT || 4000;
-const DB_HOST: string = process.env.SCRAPPER_DB_HOST || '';
-const SCRAPPER_WORKER_HOST: string = process.env.SCRAPPER_WORKER_HOST || '';
+const port: string | number = process.env.PORT || 4002;
 
 app.use(express.json());
 
@@ -19,13 +15,9 @@ app.use(express.json());
             args: ['--no-sandbox']
         });
 
-        await connectToDB({ DB_HOST });
-
-        app.use('/scrapper', function (req: any, res: any, next) {
+        app.use('/scrapper-worker', function (req: any, res: any, next) {
             req.scrapp_config = {
-                browser,
-                url: URL,
-                SCRAPPER_WORKER_HOST
+                browser
             };
             next();
         }, routes);

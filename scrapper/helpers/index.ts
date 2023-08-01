@@ -13,6 +13,7 @@ import {
 import { chunk } from 'lodash';
 import { Browser } from 'puppeteer';
 import { SECTIONS, MONTH_UKR_ARRAY } from '../../shared/constants';
+import axios from 'axios';
 
 export interface IFilterParams {
     region?: TYPE_REGION[];
@@ -109,6 +110,33 @@ export const syncChunkScrapping = async ({
     }
 
     return dataResponse;
+};
+
+export const asyncChunkScrapping = async ({
+    url,
+    paginationPages,
+    scrapperURL,
+    chunkSize
+}:{
+    url: string;
+    paginationPages: any[];
+    scrapperURL: string;
+    chunkSize: number;
+}) => {
+    const chunks: any[] = chunk(paginationPages, chunkSize);
+
+    const dataResponse = await Promise.all([chunks[0]].map(async (chunk: any) => {
+        const { data } = await axios.post(scrapperURL, { chunk, url });
+
+        console.log(data);
+        return data;
+    }));
+
+    if(!dataResponse) {
+        throw Error('asyncChunkScrapping error');
+    }
+
+    return dataResponse as any[];
 };
 
 export const transformScrappedVacancies = (data: IVacancy) => {

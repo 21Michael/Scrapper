@@ -1,0 +1,7 @@
+{
+  "verbose": false,
+  "watch": ["../scrapperWorker"],
+  "ext": "ts,js,json",
+  "ignore": [".git", "node_modules"],
+  "exec": "ts-node ../scrapperWorker/index.ts"
+}

@@ -1,6 +1,5 @@
-import { Browser } from 'puppeteer';
-import { IFilterParams, syncChunkScrapping, transformScrappedCandidates, urlGenerator } from '../helpers';
-import { scrapCandidates, scrapPagination } from '../services/scrapper';
+import { asyncChunkScrapping, IFilterParams, syncChunkScrapping, transformScrappedCandidates, urlGenerator } from '../helpers';
+import { scrapCandidates, scrapPagination } from '../../shared/services/scrapper';
 import { ICandidate, TYPE_SECTIONS, ICandidateTransformed } from '../../shared/types';
 import { DB } from '../../shared/services/db';
 import { candidateModel } from '../../shared/models';
@@ -10,11 +9,13 @@ export const getCandidates = async ({
     browser,
     filterParams,
     url,
+    SCRAPPER_WORKER_HOST,
     section,
 }:{
     fromCache: boolean;
-    browser: Browser;
+    browser: any;
     filterParams: IFilterParams;
+    SCRAPPER_WORKER_HOST: string;
     url: string;
     section: TYPE_SECTIONS;
 }) => {
@@ -36,12 +37,19 @@ export const getCandidates = async ({
 
     console.log('paginationPages:', paginationCandidatesPages.length);
 
-    const candidatesScrapped: ICandidate[][] = await syncChunkScrapping({
+    // const candidatesScrapped: ICandidate[][] = await syncChunkScrapping({
+    //     paginationPages: paginationCandidatesPages,
+    //     url: urlCandidates,
+    //     browser,
+    //     chunkSize: 40,
+    //     scrapper: scrapCandidates
+    // });
+
+    const candidatesScrapped: ICandidate[][] = await asyncChunkScrapping({
         paginationPages: paginationCandidatesPages,
         url: urlCandidates,
-        browser,
-        chunkSize: 40,
-        scrapper: scrapCandidates
+        scrapperURL: `http://${SCRAPPER_WORKER_HOST}/scrapper-worker/candidates`,
+        chunkSize: 10,
     });
 
     if(!candidatesScrapped.length) {

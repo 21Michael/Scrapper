@@ -1,12 +1,12 @@
 import {
+    asyncChunkScrapping,
     IFilterParams,
     syncChunkScrapping,
     transformScrappedVacancies,
     urlGenerator
 } from '../helpers';
-import { scrapPagination, scrapVacancies } from '../services/scrapper';
-import { Browser } from 'puppeteer';
-import { IVacancyTransformed, TYPE_SECTIONS } from '../../shared/types';
+import { scrapPagination, scrapVacancies } from '../../shared/services/scrapper';
+import { IVacancy, IVacancyTransformed, TYPE_SECTIONS } from '../../shared/types';
 import { DB } from '../../shared/services/db';
 import { vacancyModel } from '../../shared/models';
 
@@ -14,12 +14,14 @@ export const getVacancies = async ({
     fromCache,
     browser,
     filterParams,
+    SCRAPPER_WORKER_HOST,
     url,
     section
 }:{
     fromCache: boolean;
-    browser: Browser;
+    browser: any;
     filterParams: IFilterParams;
+    SCRAPPER_WORKER_HOST: string;
     url: string;
     section: TYPE_SECTIONS;
 }) => {
@@ -41,13 +43,21 @@ export const getVacancies = async ({
 
     console.log('paginationPages:', paginationVacanciesPages.length);
 
-    const vacanciesScrapped = await syncChunkScrapping({
+    // const vacanciesScrapped = await syncChunkScrapping({
+    //     paginationPages: paginationVacanciesPages,
+    //     url: urlVacancies,
+    //     browser,
+    //     chunkSize: 50,
+    //     scrapper: scrapVacancies
+    // });
+
+    const vacanciesScrapped: IVacancy[][] = await asyncChunkScrapping({
         paginationPages: paginationVacanciesPages,
         url: urlVacancies,
-        browser,
-        chunkSize: 50,
-        scrapper: scrapVacancies
+        scrapperURL: `http://${SCRAPPER_WORKER_HOST}/scrapper-worker/vacancies`,
+        chunkSize: 10,
     });
+
 
     if(!vacanciesScrapped.length) {
         return Error('Scrapping error');

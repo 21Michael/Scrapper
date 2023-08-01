@@ -1,6 +1,6 @@
 import { Browser } from 'puppeteer';
-import { EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY, MONTH_UKR_ARRAY, CITY_UKR_ARRAY, HREF_PREFIX } from '../../shared/constants';
-import { ICandidate, IVacancy } from '../../shared/types';
+import { EXP_LVL_ARRAY, COMPANY_TYPE_ARRAY, ENGlISH_LVL_ARRAY, MONTH_UKR_ARRAY, CITY_UKR_ARRAY, HREF_PREFIX } from '../constants';
+import { ICandidate, IVacancy } from '../types';
 
 export const scrapPagination = async ({
     url,
@@ -61,7 +61,7 @@ export const scrapCandidates = async ({
         const candidatesElement = document.querySelector('.searchresults') as Element;
         const candidatesElements = Array.from(candidatesElement.querySelectorAll('.card'));
 
-        return candidatesElements.map(( candidate: any) => {
+        return candidatesElements.map((candidate: any) => {
             const developerDetailsElement = candidate.querySelector('.order-1').lastElementChild;
             const developerDetailsElementText = developerDetailsElement?.textContent;
             const dateElementText = developerDetailsElement.firstElementChild.textContent.replace(/\s/g, '');
