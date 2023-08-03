@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scrapper-worker-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      service: scrapper-worker
+  template:
+    metadata:
+      labels:
+        service: scrapper-worker
+    spec:
+      containers:
+        - name: scrapper-worker
+          image: mikhail21/scrapper-worker:latest
+          ports:
+            - containerPort: 4002
+          env:
+            - name: STAGE
+              value: dev

@@ -125,12 +125,38 @@ export const asyncChunkScrapping = async ({
 }) => {
     const chunks: any[] = chunk(paginationPages, chunkSize);
 
-    const dataResponse = await Promise.all([chunks[0]].map(async (chunk: any) => {
-        const { data } = await axios.post(scrapperURL, { chunk, url });
+    const dataResponse = [];
 
-        console.log(data);
-        return data;
-    }));
+    // 2) async/sync 3 chunk
+    const step = 3;
+    for(let i = 0; i < chunks.length;) {
+        console.log('Chunk processing №:', i);
+
+        if(i >= chunks.length) {
+            break;
+        }
+
+        const chunkResponse = await Promise.all(
+            chunks.slice(i, i + step).map(async (chunk) => {
+                const { data } = await axios.post(scrapperURL, { chunk: chunk, url });
+
+                return data;
+            })
+        );
+
+        if (chunkResponse.length) {
+            dataResponse.push(...chunkResponse);
+
+            i += step;
+        }
+    }
+
+    // 1) async all chunk
+    // const dataResponse = await Promise.all(chunks.map(async (chunk: any) => {
+    //     const { data } = await axios.post(scrapperURL, { chunk, url });
+    //
+    //     return data;
+    // }));
 
     if(!dataResponse) {
         throw Error('asyncChunkScrapping error');

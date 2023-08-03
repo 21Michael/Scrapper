@@ -34,11 +34,23 @@ build:
         manual:
           - src: "*.ts"
             dest: .
+    - image: mikhail21/scrapper-worker
+      context: ../../
+      docker:
+        dockerfile: scrapperWorker/Dockerfile
+      sync:
+        manual:
+          - src: "*.ts"
+            dest: .
 manifests:
   rawYaml:
     - deployments/api.yaml
     - deployments/client.yaml
     - deployments/scrapper.yaml
+    - deployments/scrapperWorker.yaml
+#    - deployments/db.yaml
     - services/api-cluster-ip.yaml
     - services/client-cluster-ip.yaml
     - services/scrapper-cluster-ip.yaml
+    - services/scrapper-worker-cluster-ip.yaml
+#    - services/db-cluster-ip.yaml

@@ -12,6 +12,7 @@ app.use(express.json());
     try {
         const browser = await puppeteer.launch({
             headless: true,
+            timeout: 150000,
             args: ['--no-sandbox']
         });
 

@@ -20,10 +20,13 @@
 # 4) Delete commands:
 #kubectl delete deployment scrapper-deployment
 #kubectl delete deployment api-deployment
-
+#
 #kubectl delete deployment --all
 #kubectl delete services --all
 #kubectl delete pods --all
 
 # 5) Logs commands:
-#kubectl logs api-deployment-6676b9759-nzqpc
+#kubectl logs scrapper-deployment-fb9b5bcb8-7nmx2
+#kubectl logs scrapper-worker-deployment-5cd95cb6c8-5r584
+#kubectl logs scrapper-worker-deployment-5cd95cb6c8-8hxsm
+#kubectl logs scrapper-worker-deployment-5cd95cb6c8-dnqrp

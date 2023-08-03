@@ -56,7 +56,7 @@ services:
       - ../../shared:/usr/shared
     ports:
       - 4002:4002
-#    container_name: scrapper-worker
+    container_name: scrapper-worker
     healthcheck:
       test: curl -f localhost:4002/healthy
       interval: 10s

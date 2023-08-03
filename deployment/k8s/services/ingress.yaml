@@ -4,6 +4,12 @@ metadata:
   name: ingress-service
   annotations:
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout http_500"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "10"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-tries: "50"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "100"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "500"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "500"
 spec:
   rules:
     - http:
@@ -29,3 +35,10 @@ spec:
                 name: api-cluster-ip-service
                 port:
                   number: 4001
+          - path: /scrapper-worker
+            pathType: Prefix
+            backend:
+              service:
+                name: scrapper-worker-cluster-ip-service
+                port:
+                  number: 4002

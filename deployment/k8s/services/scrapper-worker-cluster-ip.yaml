@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: scrapper-worker-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector:
+    service: scrapper-worker
+  ports:
+    - port: 4002
+      targetPort: 4002

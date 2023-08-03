@@ -21,4 +21,6 @@ spec:
             - name: SCRAPPER_DB_HOST
               value: 'db-cluster-ip-service.default'
             - name: STAGE
-              value: prod
+              value: dev
+            - name: SCRAPPER_WORKER_HOST
+              value: 'scrapper-worker-cluster-ip-service.default:4002'
