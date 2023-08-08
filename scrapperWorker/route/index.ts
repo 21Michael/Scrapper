@@ -1,9 +1,16 @@
-import createRouter from 'express';
-import { asyncScrappCandidates, asyncScrappVacancies } from '../controller';
+import createRouter, { IRouter } from 'express';
+import { defineCandidatesRouter } from './candidates';
+import { defineVacanciesRouter } from './vacancies';
 
-const router = createRouter.Router();
+export const defineRouter = ({ options }: { options: Record<string, any> }): IRouter => {
+    const router = createRouter.Router() as IRouter;
 
-router.post('/candidates', asyncScrappCandidates);
-router.post('/vacancies', asyncScrappVacancies);
+    const candidatesRouter = defineCandidatesRouter({ options });
+    const vacanciesRouter = defineVacanciesRouter({ options });
 
-export default router;
+    router.use('/candidates', candidatesRouter);
+    router.use('/vacancies', vacanciesRouter);
+
+
+    return router;
+};

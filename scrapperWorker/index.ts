@@ -1,10 +1,20 @@
 import puppeteer from 'puppeteer';
 import 'dotenv/config';
 import express from 'express';
-import routes from './route';
+import { defineRouter } from './route';
+import { createChannel, assertQueue } from '../shared/services/rabbitmq';
+import {
+    AMQP_HOST,
+    CHANNEL_EXCHANGE_NAME,
+    CHANNEL_EXCHANGE_TYPE,
+    PORT,
+    SCRAPPER_QUEUE,
+    SCRAPPER_WORKER_HOST,
+    SCRAPPER_BINDING_KEY,
+} from './config';
+import { defineMessageBroker } from './messageBroker';
 
 const app = express();
-const port: string | number = process.env.PORT || 4002;
 
 app.use(express.json());
 
@@ -16,21 +26,48 @@ app.use(express.json());
             args: ['--no-sandbox']
         });
 
-        app.use('/scrapper-worker', function (req: any, res: any, next) {
-            req.scrapp_config = {
-                browser
-            };
-            next();
-        }, routes);
+        const channelRabbitmq = await createChannel({
+            AMQP_HOST,
+            CHANNEL_EXCHANGE_NAME,
+            CHANNEL_EXCHANGE_TYPE,
+        });
 
-        const server = app.listen(port, () => {
-            console.log('Server works on port: ' + port);
+        await assertQueue({
+            channel: channelRabbitmq,
+            BINDING_KEY: SCRAPPER_BINDING_KEY,
+            CHANNEL_EXCHANGE_NAME,
+            QUEUE_NAME: SCRAPPER_QUEUE
+        });
+
+        defineMessageBroker({
+            options: {
+                browser,
+                channelRabbitmq,
+                URL,
+                SCRAPPER_WORKER_HOST,
+                SCRAPPER_QUEUE,
+            }
+        });
+
+        const router = defineRouter({
+            options: {
+                browser,
+                URL,
+                SCRAPPER_WORKER_HOST,
+            }
+        });
+
+        app.use('/scrapper-worker', router);
+
+        const server = app.listen(PORT, () => {
+            console.log('Server works on port: ' + PORT);
         });
 
         process.on('SIGINT', async () => {
             console.log('Closing http server.');
 
             await browser.close();
+            channelRabbitmq.close();
 
             server.close((err) => {
                 console.log('Http server closed.');

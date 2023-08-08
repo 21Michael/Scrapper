@@ -1,10 +1,19 @@
-import { asyncChunkScrapping, IFilterParams, syncChunkScrapping, transformScrappedCandidates, urlGenerator } from '../helpers';
+import {
+    asyncChunkScrapping,
+    asyncMessageBrokerScrapping,
+    IFilterParams,
+    syncChunkScrapping,
+    transformScrappedCandidates,
+    urlGenerator
+} from '../helpers';
 import { scrapCandidates, scrapPagination } from '../../shared/services/scrapper';
 import { ICandidate, TYPE_SECTIONS, ICandidateTransformed } from '../../shared/types';
 import { DB } from '../../shared/services/db';
 import { candidateModel } from '../../shared/models';
+import { EVENT_SCRAPP_CANDIDATES, SCRAPPER_QUEUE } from '../config';
 
 export const getCandidates = async ({
+    channel,
     fromCache,
     browser,
     filterParams,
@@ -12,6 +21,7 @@ export const getCandidates = async ({
     SCRAPPER_WORKER_HOST,
     section,
 }:{
+    channel: any;
     fromCache: boolean;
     browser: any;
     filterParams: IFilterParams;
@@ -37,6 +47,7 @@ export const getCandidates = async ({
 
     console.log('paginationPages:', paginationCandidatesPages.length);
 
+    // 1) Sync Scrapping:
     // const candidatesScrapped: ICandidate[][] = await syncChunkScrapping({
     //     paginationPages: paginationCandidatesPages,
     //     url: urlCandidates,
@@ -45,10 +56,21 @@ export const getCandidates = async ({
     //     scrapper: scrapCandidates
     // });
 
-    const candidatesScrapped: ICandidate[][] = await asyncChunkScrapping({
+    // 2) Async Scrapping:
+    // const candidatesScrapped: ICandidate[][] = await asyncChunkScrapping({
+    //     paginationPages: paginationCandidatesPages,
+    //     url: urlCandidates,
+    //     scrapperURL: `http://${SCRAPPER_WORKER_HOST}/scrapper-worker/candidates`,
+    //     chunkSize: 10,
+    // });
+
+    // 3) Async message broker Scrapping:
+    const candidatesScrapped: ICandidate[][] = await asyncMessageBrokerScrapping({
+        event: EVENT_SCRAPP_CANDIDATES,
+        channel,
+        queueName: SCRAPPER_QUEUE,
         paginationPages: paginationCandidatesPages,
         url: urlCandidates,
-        scrapperURL: `http://${SCRAPPER_WORKER_HOST}/scrapper-worker/candidates`,
         chunkSize: 10,
     });
 
@@ -59,6 +81,7 @@ export const getCandidates = async ({
     await CandidateDB.deleteAll();
 
     const candidates = candidatesScrapped.flat(1);
+
     const candidatesTransformed = candidates.map(transformScrappedCandidates) as ICandidateTransformed[];
 
     await Promise.all(
@@ -67,5 +90,5 @@ export const getCandidates = async ({
         })
     );
 
-    return candidatesTransformed;
+    return candidatesTransformed as ICandidateTransformed[];
 };

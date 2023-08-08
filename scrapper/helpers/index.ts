@@ -13,7 +13,9 @@ import {
 import { chunk } from 'lodash';
 import { Browser } from 'puppeteer';
 import { SECTIONS, MONTH_UKR_ARRAY } from '../../shared/constants';
+import { sendRequest } from '../../shared/services/RPC';
 import axios from 'axios';
+import { publishMessage } from '../../shared/services/rabbitmq';
 
 export interface IFilterParams {
     region?: TYPE_REGION[];
@@ -157,6 +159,51 @@ export const asyncChunkScrapping = async ({
     //
     //     return data;
     // }));
+
+    if(!dataResponse) {
+        throw Error('asyncChunkScrapping error');
+    }
+
+    return dataResponse as any[];
+};
+
+export const asyncMessageBrokerScrapping = async ({
+    url,
+    channel,
+    queueName,
+    paginationPages,
+    chunkSize,
+    event,
+}:{
+    url: string;
+    channel: any;
+    queueName: string;
+    paginationPages: any[];
+    chunkSize: number;
+    event: string;
+}) => {
+    const chunks: any[] = chunk(paginationPages, chunkSize);
+    const dataResponse: any[] = [];
+
+    await Promise.all(chunks.map(async (chunk: any) => {
+        // await publishMessage({
+        //     channel,
+        //     queueName,
+        //     event,
+        //     data: { chunk, url }
+        // });
+
+        const chunkResponse = await sendRequest({
+            event,
+            channel,
+            data: { chunk, url },
+            queueName
+        }) as any[];
+
+        if (chunkResponse.length) {
+            dataResponse.push(...chunkResponse);
+        }
+    }));
 
     if(!dataResponse) {
         throw Error('asyncChunkScrapping error');

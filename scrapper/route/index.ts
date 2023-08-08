@@ -1,11 +1,15 @@
-import candidatesRouter from './candidates';
-import vacanciesRouter from './vacancies';
+import { defineCandidatesRouter } from './candidates';
+import { defineVacanciesRouter } from './vacancies';
+import createRouter, { IRouter } from 'express';
 
-import createRouter from 'express';
+export const defineRouter = ({ options }: { options: Record<string, any> }): IRouter => {
+    const router = createRouter.Router() as IRouter;
 
-const router = createRouter.Router();
+    const candidatesRouter = defineCandidatesRouter({ options });
+    const vacanciesRouter = defineVacanciesRouter({ options });
 
-router.use('/candidates', candidatesRouter);
-router.use('/vacancies', vacanciesRouter);
+    router.use('/candidates', candidatesRouter);
+    router.use('/vacancies', vacanciesRouter);
 
-export default router;
+    return router;
+};

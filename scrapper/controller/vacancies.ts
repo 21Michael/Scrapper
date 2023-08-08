@@ -1,16 +1,19 @@
 import {
     asyncChunkScrapping,
+    asyncMessageBrokerScrapping,
     IFilterParams,
     syncChunkScrapping,
     transformScrappedVacancies,
     urlGenerator
 } from '../helpers';
 import { scrapPagination, scrapVacancies } from '../../shared/services/scrapper';
-import { IVacancy, IVacancyTransformed, TYPE_SECTIONS } from '../../shared/types';
+import { ICandidate, IVacancy, IVacancyTransformed, TYPE_SECTIONS } from '../../shared/types';
 import { DB } from '../../shared/services/db';
 import { vacancyModel } from '../../shared/models';
+import { EVENT_SCRAPP_CANDIDATES, EVENT_SCRAPP_VACANCIES, SCRAPPER_QUEUE } from '../config';
 
 export const getVacancies = async ({
+    channel,
     fromCache,
     browser,
     filterParams,
@@ -18,6 +21,7 @@ export const getVacancies = async ({
     url,
     section
 }:{
+    channel: any;
     fromCache: boolean;
     browser: any;
     filterParams: IFilterParams;
@@ -43,6 +47,7 @@ export const getVacancies = async ({
 
     console.log('paginationPages:', paginationVacanciesPages.length);
 
+    // 1) Sync Scrapping:
     // const vacanciesScrapped = await syncChunkScrapping({
     //     paginationPages: paginationVacanciesPages,
     //     url: urlVacancies,
@@ -51,13 +56,23 @@ export const getVacancies = async ({
     //     scrapper: scrapVacancies
     // });
 
-    const vacanciesScrapped: IVacancy[][] = await asyncChunkScrapping({
+    // 2) Async Scrapping:
+    // const vacanciesScrapped: IVacancy[][] = await asyncChunkScrapping({
+    //     paginationPages: paginationVacanciesPages,
+    //     url: urlVacancies,
+    //     scrapperURL: `http://${SCRAPPER_WORKER_HOST}/scrapper-worker/vacancies`,
+    //     chunkSize: 10,
+    // });
+
+    // 3) Async message broker Scrapping:
+    const vacanciesScrapped: IVacancy[][] = await asyncMessageBrokerScrapping({
+        event: EVENT_SCRAPP_VACANCIES,
+        channel,
+        queueName: SCRAPPER_QUEUE,
         paginationPages: paginationVacanciesPages,
         url: urlVacancies,
-        scrapperURL: `http://${SCRAPPER_WORKER_HOST}/scrapper-worker/vacancies`,
         chunkSize: 10,
     });
-
 
     if(!vacanciesScrapped.length) {
         return Error('Scrapping error');

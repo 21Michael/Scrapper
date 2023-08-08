@@ -8,8 +8,8 @@
 ##
 #cd ../deployment/docker
 # 1) build and run
-#docker compose up -d --build
-#docker compose up --scale scrapper-worker=3 -d
+docker compose up -d --build
+#docker compose up --scale scrapper-worker=3 -d --build
 
 # 2) Stop Remove containers
 #docker compose down

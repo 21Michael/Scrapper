@@ -1,6 +1,29 @@
 version: "2.6"
 
 services:
+  scrapper-message-broker:
+    image: rabbitmq:3.10.7-management
+    hostname: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=mikhail21
+      - RABBITMQ_DEFAULT_PASS=gameoftanks21
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 2147483648
+    ports:
+      - 15672:15672
+      - 5672:5672
+    container_name: scrapper-message-broker
+    volumes:
+      - ../../rabbitmq/rabbitmq:/var/lib/rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    restart: always
+    networks:
+      - scrapper-network
+
   scrapper-db:
     image: mongo:latest
     ports:
@@ -10,7 +33,7 @@ services:
     container_name: scrapper-db
     command: mongod
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      test: mongo mongo:27017/test --quiet
       interval: 10s
       timeout: 10s
       retries: 5
@@ -28,6 +51,13 @@ services:
       - STAGE=dev # dev
       - SCRAPPER_DB_HOST=scrapper-db:27017
       - SCRAPPER_WORKER_HOST=scrapper-worker:4002
+      - AMQP_HOST=amqp://mikhail21:gameoftanks21@rabbitmq:5672
+      - CHANNEL_EXCHANGE_NAME=SCRAPPER
+      - CHANNEL_EXCHANGE_TYPE=direct
+      - SCRAPPER_QUEUE=SCRAPPER_QUEUE
+      - SCRAPPER_BINDING_KEY=afdg3t46gfdhgg3453tgdgaf
+      - EVENT_SCRAPP_CANDIDATES=EVENT_SCRAPP_CANDIDATES
+      - EVENT_SCRAPP_VACANCIES=EVENT_SCRAPP_VACANCIES
     volumes:
       - ../../scrapper:/usr/scrapper
       - ../../shared:/usr/shared
@@ -40,7 +70,10 @@ services:
       timeout: 10s
       retries: 3
     depends_on:
-      - scrapper-db
+      scrapper-db:
+        condition: service_started
+      scrapper-message-broker:
+          condition: service_healthy
     networks:
       - scrapper-network
 
@@ -51,6 +84,13 @@ services:
     image: mikhail21/scrapper-worker:latest
     environment:
       - STAGE=dev # dev
+      - AMQP_HOST=amqp://mikhail21:gameoftanks21@rabbitmq:5672
+      - CHANNEL_EXCHANGE_NAME=SCRAPPER
+      - CHANNEL_EXCHANGE_TYPE=direct
+      - SCRAPPER_QUEUE=SCRAPPER_QUEUE
+      - SCRAPPER_BINDING_KEY=afdg3t46gfdhgg3453tgdgaf
+      - EVENT_SCRAPP_CANDIDATES=EVENT_SCRAPP_CANDIDATES
+      - EVENT_SCRAPP_VACANCIES=EVENT_SCRAPP_VACANCIES
     volumes:
       - ../../scrapperWorker:/usr/scrapperWorker
       - ../../shared:/usr/shared
@@ -63,7 +103,10 @@ services:
       timeout: 10s
       retries: 3
     depends_on:
-      - scrapper-service
+      scrapper-service:
+        condition: service_started
+      scrapper-message-broker:
+        condition: service_healthy
     networks:
       - scrapper-network
 
