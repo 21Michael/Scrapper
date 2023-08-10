@@ -10,7 +10,7 @@ import {
     PORT,
     SCRAPPER_QUEUE,
     SCRAPPER_WORKER_HOST,
-    SCRAPPER_BINDING_KEY,
+    SCRAPPER_BINDING_KEY, AMQP_USER, AMQP_PASSWORD,
 } from './config';
 import { defineMessageBroker } from './messageBroker';
 
@@ -28,6 +28,8 @@ app.use(express.json());
 
         const channelRabbitmq = await createChannel({
             AMQP_HOST,
+            AMQP_USER,
+            AMQP_PASSWORD,
             CHANNEL_EXCHANGE_NAME,
             CHANNEL_EXCHANGE_TYPE,
         });

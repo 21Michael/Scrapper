@@ -1,6 +1,8 @@
 import 'dotenv/config';
 
 const AMQP_HOST: string = process.env.AMQP_HOST || '';
+const AMQP_USER: string = process.env.AMQP_USER || '';
+const AMQP_PASSWORD: string = process.env.AMQP_PASSWORD || '';
 const CHANNEL_EXCHANGE_NAME: string = process.env.CHANNEL_EXCHANGE_NAME || '';
 const CHANNEL_EXCHANGE_TYPE: string = process.env.CHANNEL_EXCHANGE_TYPE || '';
 const SCRAPPER_QUEUE: string = process.env.SCRAPPER_QUEUE || '';
@@ -12,6 +14,8 @@ const EVENT_SCRAPP_VACANCIES: string = process.env.EVENT_SCRAPP_VACANCIES || '';
 
 export {
     AMQP_HOST,
+    AMQP_USER,
+    AMQP_PASSWORD,
     CHANNEL_EXCHANGE_NAME,
     CHANNEL_EXCHANGE_TYPE,
     SCRAPPER_QUEUE,

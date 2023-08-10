@@ -1,7 +1,7 @@
 import { Channel } from 'amqplib';
 import { v4 as uuid4 } from 'uuid';
 
-const publishMessage = async ({
+export const sendRequest = async ({
     channel,
     data,
     queueName,
@@ -17,7 +17,7 @@ const publishMessage = async ({
     const message = JSON.stringify({ event, data });
 
     const requestQueue = queueName;
-    const replyQueue = await channel.assertQueue("");
+    const replyQueue = await channel.assertQueue('');
 
     channel.sendToQueue(requestQueue, Buffer.from(message), {
         replyTo: replyQueue.queue,
@@ -25,9 +25,10 @@ const publishMessage = async ({
     });
 
     // 2) Get message from replyQueue (unique queue without name)
-    return new Promise((resolve) => {
+    const response = await new Promise((resolve) => {
         channel.consume(replyQueue.queue, message => {
             if (!message) {
+                channel.deleteQueue(replyQueue.queue);
                 throw Error('No data passed in message')
             }
 
@@ -40,17 +41,8 @@ const publishMessage = async ({
             }
         },{ noAck: true })
     })
-}
 
-export const sendRequest = async ({
-    ...props
-}:{
-    channel: Channel;
-    data: Record<string, any>;
-    queueName: string;
-    event: string;
-}) => {
-    return await publishMessage({ ...props });
+    return response;
 }
 
 export const observeRequest = async ({
@@ -66,7 +58,7 @@ export const observeRequest = async ({
 }) => {
     const requestQueue = queueName;
 
-    channel.prefetch(3);
+    channel.prefetch(1);
 
     channel.consume(requestQueue, async message => {
         // 1) Get message from SCRAPPER_QUEUE

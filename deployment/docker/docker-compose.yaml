@@ -51,7 +51,9 @@ services:
       - STAGE=dev # dev
       - SCRAPPER_DB_HOST=scrapper-db:27017
       - SCRAPPER_WORKER_HOST=scrapper-worker:4002
-      - AMQP_HOST=amqp://mikhail21:gameoftanks21@rabbitmq:5672
+      - AMQP_HOST=rabbitmq
+      - AMQP_USER=mikhail21
+      - AMQP_PASSWORD=gameoftanks21
       - CHANNEL_EXCHANGE_NAME=SCRAPPER
       - CHANNEL_EXCHANGE_TYPE=direct
       - SCRAPPER_QUEUE=SCRAPPER_QUEUE
@@ -84,7 +86,9 @@ services:
     image: mikhail21/scrapper-worker:latest
     environment:
       - STAGE=dev # dev
-      - AMQP_HOST=amqp://mikhail21:gameoftanks21@rabbitmq:5672
+      - AMQP_HOST=rabbitmq
+      - AMQP_USER=mikhail21
+      - AMQP_PASSWORD=gameoftanks21
       - CHANNEL_EXCHANGE_NAME=SCRAPPER
       - CHANNEL_EXCHANGE_TYPE=direct
       - SCRAPPER_QUEUE=SCRAPPER_QUEUE

@@ -24,3 +24,27 @@ spec:
               value: dev
             - name: SCRAPPER_WORKER_HOST
               value: 'scrapper-worker-cluster-ip-service.default:4002'
+            - name: AMQP_HOST
+              value: message-broker-cluster-ip-service.default
+            - name: AMQP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: amqpuser
+                  key: AMQP_USER
+            - name: AMQP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: amqppassword
+                  key: AMQP_PASSWORD
+            - name: CHANNEL_EXCHANGE_NAME
+              value: SCRAPPER
+            - name: CHANNEL_EXCHANGE_TYPE
+              value: direct
+            - name: SCRAPPER_QUEUE
+              value: SCRAPPER_QUEUE
+            - name: SCRAPPER_BINDING_KEY
+              value: afdg3t46gfdhgg3453tgdgaf
+            - name: EVENT_SCRAPP_CANDIDATES
+              value: EVENT_SCRAPP_CANDIDATES
+            - name: EVENT_SCRAPP_VACANCIES
+              value: EVENT_SCRAPP_VACANCIES

@@ -3,20 +3,24 @@ import { Channel } from 'amqplib';
 
 export const createChannel = async ({
     AMQP_HOST,
+    AMQP_USER,
+    AMQP_PASSWORD,
     CHANNEL_EXCHANGE_NAME,
     CHANNEL_EXCHANGE_TYPE
 }:{
+    AMQP_USER: string;
+    AMQP_PASSWORD: string;
     AMQP_HOST: string;
     CHANNEL_EXCHANGE_NAME: string;
     CHANNEL_EXCHANGE_TYPE:  string; // 'direct' | 'topic' | 'fanout' | 'headers';
 }) => {
     try {
-        const connection = await amqplib.connect(AMQP_HOST);
+        const connection = await amqplib.connect(`amqp://${AMQP_USER}:${AMQP_PASSWORD}@${AMQP_HOST}:5672`);
         const channel = await connection.createChannel();
 
         await channel.assertExchange(CHANNEL_EXCHANGE_NAME, CHANNEL_EXCHANGE_TYPE);
 
-        console.log(`Connected to AMQP_HOST: ${AMQP_HOST}`);
+        console.log(`Connected to AMQP_HOST: amqp://${AMQP_USER}:${AMQP_PASSWORD}@${AMQP_HOST}:5672`);
 
         return channel;
     } catch (e) {
